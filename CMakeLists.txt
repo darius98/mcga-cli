@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.12.1)
+project(MCGA_cli)
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 option(MCGA_cli_tests "Build MCGA CLI tests" OFF)
 option(MCGA_cli_examples "Build MCGA CLI examples" OFF)
@@ -9,9 +14,6 @@ target_include_directories(mcga_cli INTERFACE include)
 install(DIRECTORY include DESTINATION .)
 
 if (MCGA_cli_tests)
-    # TODO(darius98): Remove this once kktest is part of MCGA.
-    link_directories(/usr/local/lib)
-
     add_executable(mcga_cli_test
         tests/choice_argument_test.cpp
         tests/flag_test.cpp
@@ -19,8 +21,6 @@ if (MCGA_cli_tests)
         tests/numeric_argument_test.cpp
         tests/parser_test.cpp
     )
-    # TODO(darius98): Remove this once kktest is part of MCGA.
-    target_include_directories(mcga_cli_test PRIVATE /usr/local/include)
     target_link_libraries(mcga_cli_test kktest mcga_cli)
 endif ()
 
