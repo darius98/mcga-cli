@@ -53,7 +53,7 @@ class Argument: public CommandLineSpec {
 
     ~Argument() override = default;
 
-    std::string get() const {
+    std::string getValue() const {
         return value;
     }
 

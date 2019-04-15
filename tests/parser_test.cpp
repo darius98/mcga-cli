@@ -40,61 +40,61 @@ TEST_CASE(McgaCliParser, "Parser") {
 
         test("no value provided leads to argument taking default value", [&] {
             parser->parse({});
-            expect(arg->get(), isEqualTo("a"));
+            expect(arg->getValue(), isEqualTo("a"));
         });
 
         test("provided with single dash, short name", [&] {
             parser->parse({"-n"});
-            expect(arg->get(), isEqualTo("b"));
+            expect(arg->getValue(), isEqualTo("b"));
         });
 
         test("provided with double dash, short name", [&] {
             parser->parse({"--n"});
-            expect(arg->get(), isEqualTo("b"));
+            expect(arg->getValue(), isEqualTo("b"));
         });
 
         test("provided with double dash, long name", [&] {
             parser->parse({"--name"});
-            expect(arg->get(), isEqualTo("b"));
+            expect(arg->getValue(), isEqualTo("b"));
         });
 
         test("value provided with single dash & space", [&] {
             parser->parse({"-n", "v"});
-            expect(arg->get(), isEqualTo("v"));
+            expect(arg->getValue(), isEqualTo("v"));
         });
 
         test("value provided with single dash & equal sign", [&] {
             parser->parse({"-n=v"});
-            expect(arg->get(), isEqualTo("v"));
+            expect(arg->getValue(), isEqualTo("v"));
         });
 
         test("value provided with double dash & space is positional, while "
              "the argument takes implicit value", [&] {
             auto positionalArgs = parser->parse({"--name", "v"});
-            expect(arg->get(), isEqualTo("b"));
+            expect(arg->getValue(), isEqualTo("b"));
             expect(positionalArgs, isEqualTo(vector<string>{"v"}));
         });
 
         test("value provided with double dash & equal sign (short name)", [&] {
             parser->parse({"--n=v"});
-            expect(arg->get(), isEqualTo("v"));
+            expect(arg->getValue(), isEqualTo("v"));
         });
 
         test("value provided with double dash & equal sign (long name)", [&] {
             parser->parse({"--name=v"});
-            expect(arg->get(), isEqualTo("v"));
+            expect(arg->getValue(), isEqualTo("v"));
         });
 
         test("providing value for different argument name does not influence"
              " interesting argument", [&] {
             parser->parse({"-m", "v"});
-            expect(arg->get(), isEqualTo("a"));
+            expect(arg->getValue(), isEqualTo("a"));
         });
 
         test("when providing multiple values for one argument, it takes the "
              "last one", [&] {
             parser->parse({"-n", "v1", "-n", "--name=v2"});
-            expect(arg->get(), isEqualTo("v2"));
+            expect(arg->getValue(), isEqualTo("v2"));
         });
     });
 
@@ -120,42 +120,42 @@ TEST_CASE(McgaCliParser, "Parser") {
 
         test("Providing values for multiple arguments via double dash", [&] {
             parser->parse({"--arg_a=value", "--b"});
-            expect(a->get(), isEqualTo("value"));
-            expect(b->get(), isEqualTo("implicit"));
-            expect(c->get(), isEqualTo("default"));
+            expect(a->getValue(), isEqualTo("value"));
+            expect(b->getValue(), isEqualTo("implicit"));
+            expect(c->getValue(), isEqualTo("default"));
         });
 
         test("Providing values for multiple arguments with multiple single "
              "dash arguments", [&] {
             parser->parse({"-a", "-b", "value"});
-            expect(a->get(), isEqualTo("implicit"));
-            expect(b->get(), isEqualTo("value"));
-            expect(c->get(), isEqualTo("default"));
+            expect(a->getValue(), isEqualTo("implicit"));
+            expect(b->getValue(), isEqualTo("value"));
+            expect(c->getValue(), isEqualTo("default"));
         });
 
         test("Providing implicit values for multiple arguments via a single"
              " dash argument", [&] {
             parser->parse({"-ab"});
-            expect(a->get(), isEqualTo("implicit"));
-            expect(b->get(), isEqualTo("implicit"));
-            expect(c->get(), isEqualTo("default"));
+            expect(a->getValue(), isEqualTo("implicit"));
+            expect(b->getValue(), isEqualTo("implicit"));
+            expect(c->getValue(), isEqualTo("default"));
         });
 
         test("Providing values for multiple arguments via a single dash"
              "argument & space for non-implicit value of the last one", [&] {
             parser->parse({"-abc", "value"});
-            expect(a->get(), isEqualTo("implicit"));
-            expect(b->get(), isEqualTo("implicit"));
-            expect(c->get(), isEqualTo("value"));
+            expect(a->getValue(), isEqualTo("implicit"));
+            expect(b->getValue(), isEqualTo("implicit"));
+            expect(c->getValue(), isEqualTo("value"));
         });
 
         test("Providing values for multiple arguments via a single dash"
              "argument & equal sign for non-implicit value of the last one",
              [&] {
                  parser->parse({"-abc=value"});
-                 expect(a->get(), isEqualTo("implicit"));
-                 expect(b->get(), isEqualTo("implicit"));
-                 expect(c->get(), isEqualTo("value"));
+                 expect(a->getValue(), isEqualTo("implicit"));
+                 expect(b->getValue(), isEqualTo("implicit"));
+                 expect(c->getValue(), isEqualTo("value"));
              });
     });
 

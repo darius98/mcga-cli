@@ -19,6 +19,6 @@ int main(int argc, char** argv) {
     parser.parse(argc, argv);
 
     cout << "Argument appeared = " << boolalpha << arg->appeared() << "\n";
-    cout << "Argument value = " << arg->get() << "\n";
+    cout << "Argument value = " << arg->getValue() << "\n";
     return 0;
 }

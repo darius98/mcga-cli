@@ -32,7 +32,7 @@ TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
         auto arg = parser->addChoiceArgument(ChoiceArgumentSpec<string>("name")
                                              .addOption("value", "value"));
         parser->parse({"--name=value"});
-        expect(arg->get(), isEqualTo("value"));
+        expect(arg->getValue(), isEqualTo("value"));
     });
 
     test("String choice argument, setting invalid value throws", [&] {
@@ -49,10 +49,10 @@ TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
                                              .addOption("key2", "value"));
 
         parser->parse({"--name=key1"});
-        expect(arg->get(), isEqualTo("value"));
+        expect(arg->getValue(), isEqualTo("value"));
 
         parser->parse({"--name=key2"});
-        expect(arg->get(), isEqualTo("value"));
+        expect(arg->getValue(), isEqualTo("value"));
     });
 
     test("Argument that maps to integers", [&] {
@@ -60,10 +60,10 @@ TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
                                              .addOption("1", 1)
                                              .addOption("ONE", 1));
         parser->parse({"--name=1"});
-        expect(arg->get(), isEqualTo(1));
+        expect(arg->getValue(), isEqualTo(1));
 
         parser->parse({"--name=ONE"});
-        expect(arg->get(), isEqualTo(1));
+        expect(arg->getValue(), isEqualTo(1));
     });
 
     test("ArgumentSpec options manipulation", [&] {

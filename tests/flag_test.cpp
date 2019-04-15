@@ -25,27 +25,27 @@ TEST_CASE(McgaCliFlag, "Flag") {
     });
 
     test("Default flag value is false", [&] {
-        expect(a->get(), isFalse);
-        expect(b->get(), isFalse);
+        expect(a->getValue(), isFalse);
+        expect(b->getValue(), isFalse);
     });
 
     test("Implicit flag value is true", [&] {
         parser->parse({"--flag_a"});
-        expect(a->get(), isTrue);
-        expect(b->get(), isFalse);
+        expect(a->getValue(), isTrue);
+        expect(b->getValue(), isFalse);
 
         parser->parse({"--a"});
-        expect(a->get(), isTrue);
-        expect(b->get(), isFalse);
+        expect(a->getValue(), isTrue);
+        expect(b->getValue(), isFalse);
 
         parser->parse({"-ab", "-a"});
-        expect(a->get(), isTrue);
-        expect(b->get(), isTrue);
+        expect(a->getValue(), isTrue);
+        expect(b->getValue(), isTrue);
     });
 
     test("Passing a flag value 'enabled' enables it", [&] {
         parser->parse({"--flag_a=enabled"});
-        expect(a->get(), isTrue);
+        expect(a->getValue(), isTrue);
     });
 
     test("Passing a flag random values throws", [&] {
@@ -58,6 +58,6 @@ TEST_CASE(McgaCliFlag, "Flag") {
          "positional argument", [&] {
         auto positional = parser->parse({"-a", "enabled"});
         expect(positional, isEqualTo(vector<string>{"enabled"}));
-        expect(a->get(), isTrue);
+        expect(a->getValue(), isTrue);
     });
 }

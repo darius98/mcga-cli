@@ -32,13 +32,13 @@ TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
         auto arg = parser->addNumericArgument(NumericArgumentSpec<int>("name"));
 
         parser->parse({"--name=17"});
-        expect(arg->get(), isEqualTo(17));
+        expect(arg->getValue(), isEqualTo(17));
 
         parser->parse({"--name=-7"});
-        expect(arg->get(), isEqualTo(-7));
+        expect(arg->getValue(), isEqualTo(-7));
 
         parser->parse({"--name=1337"});
-        expect(arg->get(), isEqualTo(1337));
+        expect(arg->getValue(), isEqualTo(1337));
     });
 
     test("Passing a NumericArgument<int> a non-integer value throws", [&] {
@@ -51,7 +51,7 @@ TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
     test("Passing a NumericArgument<int> a negative value works", [&] {
         auto arg = parser->addNumericArgument(NumericArgumentSpec<int>("name"));
         parser->parse({"--name=-1337"});
-        expect(arg->get(), isEqualTo(-1337));
+        expect(arg->getValue(), isEqualTo(-1337));
     });
 
     test("Passing a NumericArgument<long long> a 64-bit integer value works",
@@ -59,6 +59,6 @@ TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
         auto arg = parser->addNumericArgument(
                 NumericArgumentSpec<long long>("name"));
         parser->parse({"--name=12345678912345"});
-        expect(arg->get(), isEqualTo(12345678912345LL));
+        expect(arg->getValue(), isEqualTo(12345678912345LL));
     });
 }

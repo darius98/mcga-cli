@@ -71,7 +71,7 @@ namespace internal {
 template<class T>
 class ChoiceArgument: public CommandLineSpec {
  public:
-    T get() const {
+    T getValue() const {
         return value;
     }
 

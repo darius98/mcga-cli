@@ -216,7 +216,7 @@ class Parser {
         }
 
         for (const auto& flag: terminalFlags) {
-            if (flag.first->get()) {
+            if (flag.first->getValue()) {
                 flag.second();
                 exit(0);
             }

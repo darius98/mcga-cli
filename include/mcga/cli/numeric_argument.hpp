@@ -52,7 +52,7 @@ template<class T,
          class=typename std::enable_if<std::is_arithmetic<T>::value>::type>
 class NumericArgument: public CommandLineSpec {
  public:
-    T get() const {
+    T getValue() const {
         return value;
     }
 
