@@ -15,22 +15,22 @@ install(DIRECTORY include DESTINATION .)
 
 if (MCGA_cli_tests)
     add_executable(mcga_cli_test
-        tests/choice_argument_test.cpp
-        tests/flag_test.cpp
-        tests/help_test.cpp
-        tests/numeric_argument_test.cpp
-        tests/parser_test.cpp
-    )
+            tests/choice_argument_test.cpp
+            tests/flag_test.cpp
+            tests/help_test.cpp
+            tests/numeric_argument_test.cpp
+            tests/parser_test.cpp
+            )
     target_link_libraries(mcga_cli_test kktest mcga_cli)
 endif ()
 
 if (MCGA_cli_examples)
-    function (add_example example_name)
+    function(add_example example_name)
         add_executable(mcga_cli_${example_name}_example
-            examples/${example_name}.cpp
-        )
+                examples/${example_name}.cpp
+                )
         target_link_libraries(mcga_cli_${example_name}_example mcga_cli)
-    endfunction ()
+    endfunction()
 
     add_example(basic)
 endif ()

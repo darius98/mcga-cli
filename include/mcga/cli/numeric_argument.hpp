@@ -9,7 +9,7 @@
 namespace mcga::cli {
 
 template<class T,
-         class=typename std::enable_if<std::is_arithmetic<T>::value>::type>
+         class = typename std::enable_if<std::is_arithmetic<T>::value>::type>
 struct NumericArgumentSpec {
     std::string name;
     std::string description = "";
@@ -18,7 +18,8 @@ struct NumericArgumentSpec {
     T defaultValue = 0;
     T implicitValue = 0;
 
-    explicit NumericArgumentSpec(std::string _name): name(std::move(_name)) {}
+    explicit NumericArgumentSpec(std::string _name): name(std::move(_name)) {
+    }
 
     NumericArgumentSpec& setDescription(std::string _description) {
         description = std::move(_description);
@@ -49,9 +50,9 @@ struct NumericArgumentSpec {
 namespace internal {
 
 template<class T,
-         class=typename std::enable_if<std::is_arithmetic<T>::value>::type>
-class NumericArgument: public CommandLineSpec {
- public:
+         class = typename std::enable_if<std::is_arithmetic<T>::value>::type>
+class NumericArgument : public CommandLineSpec {
+  public:
     T getValue() const {
         return value;
     }
@@ -60,11 +61,12 @@ class NumericArgument: public CommandLineSpec {
         return appearedInArgs;
     }
 
- private:
+  private:
     class MakeSharedEnabler;
 
-    NumericArgument(T _defaultValue, T _implicitValue):
-            defaultValue(_defaultValue), implicitValue(_implicitValue) {}
+    NumericArgument(T _defaultValue, T _implicitValue)
+            : defaultValue(_defaultValue), implicitValue(_implicitValue) {
+    }
 
     ~NumericArgument() override = default;
 
@@ -89,15 +91,16 @@ class NumericArgument: public CommandLineSpec {
     T implicitValue;
     bool appearedInArgs = false;
 
-friend class mcga::cli::Parser;
+    friend class mcga::cli::Parser;
 };
 
 template<class T, class S>
 class NumericArgument<T, S>::MakeSharedEnabler : public NumericArgument<T, S> {
- public:
+  public:
     MakeSharedEnabler(T _defaultValue, T _implicitValue)
             : NumericArgument<T, S>(std::move(_defaultValue),
-                                    std::move(_implicitValue)) {}
+                                    std::move(_implicitValue)) {
+    }
 };
 
 }  // namespace internal
@@ -114,8 +117,8 @@ inline void NumericArgument<char>::setValue(const std::string& _value) {
 }
 
 template<>
-inline void NumericArgument<unsigned char>::setValue(
-        const std::string& _value) {
+inline void
+  NumericArgument<unsigned char>::setValue(const std::string& _value) {
     value = static_cast<unsigned char>(std::stoul(_value));
     appearedInArgs = true;
 }
@@ -127,8 +130,8 @@ inline void NumericArgument<short int>::setValue(const std::string& _value) {
 }
 
 template<>
-inline void NumericArgument<unsigned short int>::setValue(
-        const std::string& _value) {
+inline void
+  NumericArgument<unsigned short int>::setValue(const std::string& _value) {
     value = static_cast<unsigned short int>(std::stoul(_value));
     appearedInArgs = true;
 }
@@ -152,8 +155,8 @@ inline void NumericArgument<long>::setValue(const std::string& _value) {
 }
 
 template<>
-inline void NumericArgument<unsigned long>::setValue(
-        const std::string& _value) {
+inline void
+  NumericArgument<unsigned long>::setValue(const std::string& _value) {
     value = std::stoul(_value);
     appearedInArgs = true;
 }
@@ -165,8 +168,8 @@ inline void NumericArgument<long long>::setValue(const std::string& _value) {
 }
 
 template<>
-inline void NumericArgument<unsigned long long>::setValue(
-        const std::string& _value) {
+inline void
+  NumericArgument<unsigned long long>::setValue(const std::string& _value) {
     value = std::stoull(_value);
     appearedInArgs = true;
 }

@@ -8,17 +8,17 @@ namespace mcga::cli {
 
 class Parser;
 
-} // namespace mcga::cli
+}  // namespace mcga::cli
 
 namespace mcga::cli::internal {
 
 class CommandLineSpec {
- protected:
+  protected:
     CommandLineSpec() = default;
 
     virtual ~CommandLineSpec() = default;
 
- private:
+  private:
     MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
 
     virtual bool takesNextPositionalArg() const = 0;
@@ -29,7 +29,7 @@ class CommandLineSpec {
 
     virtual void setValue(const std::string& value) = 0;
 
- friend class mcga::cli::Parser;
+    friend class mcga::cli::Parser;
 };
 
 }  // namespace mcga::cli::internal

@@ -6,22 +6,19 @@
 
 #include <mcga/cli.hpp>
 
-using mcga::cli::NumericArgumentSpec;
-using mcga::cli::Parser;
-using kktest::matchers::throwsA;
-using kktest::matchers::isEqualTo;
 using kktest::setUp;
 using kktest::tearDown;
 using kktest::test;
+using kktest::matchers::isEqualTo;
+using kktest::matchers::throwsA;
+using mcga::cli::NumericArgumentSpec;
+using mcga::cli::Parser;
 using std::invalid_argument;
-
 
 TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
     Parser* parser = nullptr;
 
-    setUp([&] {
-        parser = new Parser("");
-    });
+    setUp([&] { parser = new Parser(""); });
 
     tearDown([&] {
         delete parser;
@@ -43,9 +40,8 @@ TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
 
     test("Passing a NumericArgument<int> a non-integer value throws", [&] {
         parser->addNumericArgument(NumericArgumentSpec<int>("name"));
-        expect([&] {
-            parser->parse({"--name=invalid"});
-        }, throwsA<invalid_argument>());
+        expect([&] { parser->parse({"--name=invalid"}); },
+               throwsA<invalid_argument>());
     });
 
     test("Passing a NumericArgument<int> a negative value works", [&] {
@@ -56,9 +52,9 @@ TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
 
     test("Passing a NumericArgument<long long> a 64-bit integer value works",
          [&] {
-        auto arg = parser->addNumericArgument(
-                NumericArgumentSpec<long long>("name"));
-        parser->parse({"--name=12345678912345"});
-        expect(arg->getValue(), isEqualTo(12345678912345LL));
-    });
+             auto arg = parser->addNumericArgument(
+               NumericArgumentSpec<long long>("name"));
+             parser->parse({"--name=12345678912345"});
+             expect(arg->getValue(), isEqualTo(12345678912345LL));
+         });
 }

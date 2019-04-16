@@ -17,7 +17,8 @@ struct ArgumentSpec {
     std::string defaultValue = "";
     std::string implicitValue = "";
 
-    explicit ArgumentSpec(std::string name): name(std::move(name)) {}
+    explicit ArgumentSpec(std::string name): name(std::move(name)) {
+    }
 
     ArgumentSpec& setDescription(std::string _description) {
         description = std::move(_description);
@@ -47,8 +48,8 @@ struct ArgumentSpec {
 
 namespace internal {
 
-class Argument: public CommandLineSpec {
- public:
+class Argument : public CommandLineSpec {
+  public:
     MCGA_DISALLOW_COPY_AND_MOVE(Argument);
 
     ~Argument() override = default;
@@ -61,12 +62,13 @@ class Argument: public CommandLineSpec {
         return appearedInArgs;
     }
 
- private:
+  private:
     class MakeSharedEnabler;
 
     Argument(std::string defaultValue, std::string implicitValue)
             : defaultValue(std::move(defaultValue)),
-              implicitValue(std::move(implicitValue)) {}
+              implicitValue(std::move(implicitValue)) {
+    }
 
     bool takesNextPositionalArg() const override {
         return true;
@@ -87,19 +89,20 @@ class Argument: public CommandLineSpec {
         appearedInArgs = true;
     }
 
- private:
+  private:
     std::string value;
     std::string defaultValue;
     std::string implicitValue;
     bool appearedInArgs = false;
 
-friend class mcga::cli::Parser;
+    friend class mcga::cli::Parser;
 };
 
-class Argument::MakeSharedEnabler: public Argument {
- public:
+class Argument::MakeSharedEnabler : public Argument {
+  public:
     MakeSharedEnabler(std::string defaultValue, std::string implicitValue)
-            : Argument(std::move(defaultValue), std::move(implicitValue)) {}
+            : Argument(std::move(defaultValue), std::move(implicitValue)) {
+    }
 };
 
 }  // namespace internal

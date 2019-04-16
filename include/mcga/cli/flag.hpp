@@ -13,7 +13,8 @@ struct FlagSpec {
     std::string helpGroup = "";
     std::string shortName = "";
 
-    explicit FlagSpec(std::string _name): name(std::move(_name)) {}
+    explicit FlagSpec(std::string _name): name(std::move(_name)) {
+    }
 
     FlagSpec& setDescription(std::string _description) {
         description = std::move(_description);
@@ -33,37 +34,39 @@ struct FlagSpec {
 
 namespace internal {
 
-class Flag: public internal::ChoiceArgument<bool> {
- private:
+class Flag : public internal::ChoiceArgument<bool> {
+  private:
     class FlagMakeSharedEnabler;
 
-    Flag(): internal::ChoiceArgument<bool>({
-        {"1", true},
-        {"true", true},
-        {"TRUE", true},
-        {"enabled", true},
-        {"ENABLED", true},
+    Flag()
+            : internal::ChoiceArgument<bool>({{"1", true},
+                                              {"true", true},
+                                              {"TRUE", true},
+                                              {"enabled", true},
+                                              {"ENABLED", true},
 
-        {"0", false},
-        {"false", false},
-        {"FALSE", false},
-        {"disabled", false},
-        {"DISABLED", false}
-    }, false, true) {}
+                                              {"0", false},
+                                              {"false", false},
+                                              {"FALSE", false},
+                                              {"disabled", false},
+                                              {"DISABLED", false}},
+                                             false,
+                                             true) {
+    }
 
     bool takesNextPositionalArg() const override {
         return false;
     }
 
- friend class mcga::cli::Parser;
+    friend class mcga::cli::Parser;
 };
 
 class Flag::FlagMakeSharedEnabler : public Flag {
- public:
+  public:
     FlagMakeSharedEnabler() = default;
 };
 
-} // namespace internal
+}  // namespace internal
 
 using Flag = std::shared_ptr<internal::Flag>;
 

@@ -14,11 +14,12 @@
 namespace mcga::cli {
 
 class Parser {
- public:
+  public:
     using ArgList = std::vector<std::string>;
 
     explicit Parser(const std::string& _helpPrefix)
-            : helpPrefix(_helpPrefix + "\n") {}
+            : helpPrefix(_helpPrefix + "\n") {
+    }
 
     MCGA_DISALLOW_COPY_AND_MOVE(Parser);
 
@@ -27,18 +28,15 @@ class Parser {
     Argument addArgument(const ArgumentSpec& spec) {
         checkNameAvailability(spec.name, spec.shortName);
         auto argument = std::make_shared<internal::Argument::MakeSharedEnabler>(
-                spec.defaultValue, spec.implicitValue);
+          spec.defaultValue, spec.implicitValue);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
         if (!spec.defaultValue.empty() || !spec.implicitValue.empty()) {
-            extra = "\t\tDefault: '"
-                    + spec.defaultValue
-                    + "', Implicit: '"
-                    + spec.implicitValue
-                    + "'";
+            extra = "\t\tDefault: '" + spec.defaultValue + "', Implicit: '"
+              + spec.implicitValue + "'";
         }
-        addHelp(spec.helpGroup, spec.name, spec.shortName,
-                spec.description, extra);
+        addHelp(
+          spec.helpGroup, spec.name, spec.shortName, spec.description, extra);
         return argument;
     }
 
@@ -46,16 +44,13 @@ class Parser {
     NumericArgument<T> addNumericArgument(const NumericArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
         auto argument = std::make_shared<
-            typename internal::NumericArgument<T>::MakeSharedEnabler>(
-                spec.defaultValue,
-                spec.implicitValue);
+          typename internal::NumericArgument<T>::MakeSharedEnabler>(
+          spec.defaultValue, spec.implicitValue);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
         if (spec.defaultValue != 0 || spec.implicitValue != 0) {
-            extra = "\t\tDefault: "
-                    + toString(spec.defaultValue)
-                    + ", Implicit: "
-                    + toString(spec.implicitValue);
+            extra = "\t\tDefault: " + toString(spec.defaultValue)
+              + ", Implicit: " + toString(spec.implicitValue);
         }
         addHelp(spec.helpGroup,
                 spec.name,
@@ -83,28 +78,22 @@ class Parser {
     }
 
     void addTerminalFlag(const FlagSpec& spec, const std::string& message) {
-        terminalFlags.emplace_back(addFlag(spec), [message] {
-            std::cout << message;
-        });
+        terminalFlags.emplace_back(addFlag(spec),
+                                   [message] { std::cout << message; });
     }
 
     void addHelpFlag() {
-        addTerminalFlag(FlagSpec("help")
-                        .setShortName("h")
-                        .setDescription("Display this help menu."),
-                        [this]() {
-            std::cout << renderHelp();
-        });
+        addTerminalFlag(FlagSpec("help").setShortName("h").setDescription(
+                          "Display this help menu."),
+                        [this]() { std::cout << renderHelp(); });
     }
 
     template<class T>
     ChoiceArgument<T> addChoiceArgument(const ChoiceArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
         auto arg = std::make_shared<
-            typename internal::ChoiceArgument<T>::MakeSharedEnabler>(
-                spec.options,
-                spec.defaultValue,
-                spec.implicitValue);
+          typename internal::ChoiceArgument<T>::MakeSharedEnabler>(
+          spec.options, spec.defaultValue, spec.implicitValue);
         addSpec(arg, spec.name, spec.shortName);
         std::string renderedOptions;
         bool first = true;
@@ -119,16 +108,14 @@ class Parser {
                 spec.name,
                 spec.shortName,
                 spec.description,
-                "\t\tDefault: "
-                + toString(spec.defaultValue)
-                + ", Implicit: "
-                + toString(spec.implicitValue)
-                + ", allowed values: [" + renderedOptions + "]");
+                "\t\tDefault: " + toString(spec.defaultValue)
+                  + ", Implicit: " + toString(spec.implicitValue)
+                  + ", allowed values: [" + renderedOptions + "]");
         return arg;
     }
 
     ArgList parse(const ArgList& args) {
-        for (const CommandLineSpecPtr& spec : specs) {
+        for (const CommandLineSpecPtr& spec: specs) {
             spec->setDefault();
         }
 
@@ -227,7 +214,7 @@ class Parser {
 
     ArgList parse(int argc, char** argv) {
         ArgList args(static_cast<std::size_t>(argc));
-        for (int i = 0; i < argc; ++ i) {
+        for (int i = 0; i < argc; ++i) {
             // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             args.emplace_back(argv[i]);
         }
@@ -236,13 +223,13 @@ class Parser {
 
     std::string renderHelp() const {
         std::string help = helpPrefix + "\n";
-        for (const HelpGroup& group : helpSections) {
+        for (const HelpGroup& group: helpSections) {
             help += "\n" + group.content;
         }
         return help;
     }
 
- private:
+  private:
     using CommandLineSpecPtr = std::shared_ptr<internal::CommandLineSpec>;
 
     struct HelpGroup {
@@ -279,25 +266,27 @@ class Parser {
     bool shouldApplyValue(const std::string& cliString) const {
         auto specIterator = specsByCliString.find(cliString);
         return specIterator != specsByCliString.end()
-               && specIterator->second->takesNextPositionalArg();
+          && specIterator->second->takesNextPositionalArg();
     }
 
     void checkNameAvailability(const std::string& name,
                                const std::string& shortName) const {
         if (reservedNames.count(name) != 0) {
             throw std::runtime_error(
-                "Argument tried to register " + name + " as a command-line "
+              "Argument tried to register " + name
+              + " as a command-line "
                 "name, but a different argument already has it as a name.");
         }
         if (!shortName.empty() && reservedNames.count(shortName) != 0) {
             throw std::runtime_error(
-                "Argument tried to register " + shortName + " as a command-line"
+              "Argument tried to register " + shortName
+              + " as a command-line"
                 " short name, but a different argument already has it as a "
                 "short name.");
         }
         if (shortName.size() > 1) {
             throw std::runtime_error(
-                "Argument short name should always have length 1.");
+              "Argument short name should always have length 1.");
         }
     }
 
@@ -321,7 +310,7 @@ class Parser {
         }
 
         bool foundHelpGroup = false;
-        for (HelpGroup& group : helpSections) {
+        for (HelpGroup& group: helpSections) {
             if (group.groupName == helpGroup) {
                 foundHelpGroup = true;
                 group.content += helpLine + "\n";
@@ -329,10 +318,8 @@ class Parser {
             }
         }
         if (!foundHelpGroup) {
-            helpSections.push_back({
-                helpGroup,
-                helpGroup + "\n" + helpLine + "\n"
-            });
+            helpSections.push_back(
+              {helpGroup, helpGroup + "\n" + helpLine + "\n"});
         }
     }
 

@@ -19,7 +19,8 @@ struct ChoiceArgumentSpec {
     T defaultValue;
     T implicitValue;
 
-    explicit ChoiceArgumentSpec(std::string _name): name(std::move(_name)) {}
+    explicit ChoiceArgumentSpec(std::string _name): name(std::move(_name)) {
+    }
 
     ChoiceArgumentSpec& setShortName(const std::string& _shortName) {
         shortName = _shortName;
@@ -46,14 +47,14 @@ struct ChoiceArgumentSpec {
         return *this;
     }
 
-    ChoiceArgumentSpec& setOptions(
-            const std::vector<std::pair<std::string, T>>& _options) {
+    ChoiceArgumentSpec&
+      setOptions(const std::vector<std::pair<std::string, T>>& _options) {
         options.clear();
         return addOptions(_options);
     }
 
-    ChoiceArgumentSpec& addOptions(
-            const std::vector<std::pair<std::string, T>>& _options) {
+    ChoiceArgumentSpec&
+      addOptions(const std::vector<std::pair<std::string, T>>& _options) {
         for (const std::pair<std::string, T>& option: _options) {
             options[option.first] = option.second;
         }
@@ -69,8 +70,8 @@ struct ChoiceArgumentSpec {
 namespace internal {
 
 template<class T>
-class ChoiceArgument: public CommandLineSpec {
- public:
+class ChoiceArgument : public CommandLineSpec {
+  public:
     T getValue() const {
         return value;
     }
@@ -79,17 +80,17 @@ class ChoiceArgument: public CommandLineSpec {
         return appearedInArgs;
     }
 
- protected:
+  protected:
     ChoiceArgument(std::map<std::string, T> _options,
                    T _defaultValue,
-                   T _implicitValue):
-            options(std::move(_options)),
-            defaultValue(std::move(_defaultValue)),
-            implicitValue(std::move(_implicitValue)) {
+                   T _implicitValue)
+            : options(std::move(_options)),
+              defaultValue(std::move(_defaultValue)),
+              implicitValue(std::move(_implicitValue)) {
         value = defaultValue;
     }
 
- private:
+  private:
     class MakeSharedEnabler;
 
     void setDefault() override {
@@ -118,9 +119,10 @@ class ChoiceArgument: public CommandLineSpec {
                 first = false;
                 renderedOptions += "'" + option.first + "'";
             }
-            throw std::invalid_argument(
-                "Trying to set option `" + _value + "` to argument with "
-                "options [" + renderedOptions + "]");
+            throw std::invalid_argument("Trying to set option `" + _value
+                                        + "` to argument with "
+                                          "options ["
+                                        + renderedOptions + "]");
         }
         value = optionsIterator->second;
         appearedInArgs = true;
@@ -132,18 +134,19 @@ class ChoiceArgument: public CommandLineSpec {
     T implicitValue;
     bool appearedInArgs = false;
 
-friend class mcga::cli::Parser;
+    friend class mcga::cli::Parser;
 };
 
 template<class T>
 class ChoiceArgument<T>::MakeSharedEnabler : public ChoiceArgument<T> {
- public:
+  public:
     MakeSharedEnabler(std::map<std::string, T> options,
                       T defaultValue,
                       T implicitValue)
-        : ChoiceArgument<T>(std::move(options),
-                            std::move(defaultValue),
-                            std::move(implicitValue)) {}
+            : ChoiceArgument<T>(std::move(options),
+                                std::move(defaultValue),
+                                std::move(implicitValue)) {
+    }
 };
 
 }  // namespace internal
