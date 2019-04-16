@@ -3,12 +3,12 @@
 
 #include <mcga/cli.hpp>
 
-using kktest::group;
-using kktest::setUp;
-using kktest::tearDown;
-using kktest::test;
-using kktest::matchers::isEqualTo;
-using kktest::matchers::throwsA;
+using mcga::cli::Argument;
+using mcga::cli::ArgumentSpec;
+using mcga::cli::Parser;
+using mcga::test::group;
+using mcga::test::setUp;
+using mcga::test::tearDown;
 using mcga::cli::Argument;
 using mcga::cli::ArgumentSpec;
 using mcga::cli::Parser;

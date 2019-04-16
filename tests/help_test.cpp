@@ -8,11 +8,10 @@
 
 #include <mcga/cli.hpp>
 
-using kktest::setUp;
-using kktest::tearDown;
-using kktest::test;
-using kktest::matchers::isEqualTo;
 using mcga::cli::ArgumentSpec;
+using mcga::cli::FlagSpec;
+using mcga::cli::NumericArgumentSpec;
+using mcga::cli::Parser;
 using mcga::cli::FlagSpec;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;

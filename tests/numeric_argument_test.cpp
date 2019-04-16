@@ -6,11 +6,11 @@
 
 #include <mcga/cli.hpp>
 
-using kktest::setUp;
-using kktest::tearDown;
-using kktest::test;
-using kktest::matchers::isEqualTo;
-using kktest::matchers::throwsA;
+using mcga::cli::NumericArgumentSpec;
+using mcga::cli::Parser;
+using mcga::test::setUp;
+using mcga::test::tearDown;
+using mcga::test::test;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
 using std::invalid_argument;

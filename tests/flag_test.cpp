@@ -3,8 +3,8 @@
 
 #include <mcga/cli.hpp>
 
-using namespace kktest;
-using namespace kktest::matchers;
+using namespace mcga::test;
+using namespace mcga::test::matchers;
 using namespace mcga::cli;
 using namespace std;
 
