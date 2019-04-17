@@ -58,8 +58,8 @@ class Flag : public internal::ChoiceArgument<bool> {
                              {"FALSE", false},
                              {"disabled", false},
                              {"DISABLED", false}})
-                .setDefaultValue(false)
-                .setImplicitValue(true)) {
+                .setDefaultValue("false")
+                .setImplicitValue("true")) {
     }
 
     MCGA_DISALLOW_COPY_AND_MOVE(Flag);

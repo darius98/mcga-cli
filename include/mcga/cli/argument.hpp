@@ -56,7 +56,7 @@ class Argument : public CommandLineSpec {
         return value;
     }
 
-    bool appeared() const {
+    bool appeared() const override {
         return appearedInArgs;
     }
 

@@ -15,8 +15,10 @@ using mcga::cli::Parser;
 using mcga::cli::FlagSpec;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
+using mcga::test::expect;
+using mcga::test::setUp;
+using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::matchers::isEqualTo;
 using mcga::test::matchers::isEqualTo;
 
 TEST_CASE(McgaCliHelp, "Help") {

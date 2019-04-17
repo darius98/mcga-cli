@@ -17,8 +17,10 @@ struct ChoiceArgumentSpec {
     std::string helpGroup = "";
     std::string shortName = "";
     std::map<std::string, T> options;
-    T defaultValue;
-    T implicitValue;
+    bool hasDefaultValue = false;
+    std::string defaultValue;
+    bool hasImplicitValue = false;
+    std::string implicitValue;
 
     explicit ChoiceArgumentSpec(std::string _name): name(std::move(_name)) {
     }
@@ -38,13 +40,15 @@ struct ChoiceArgumentSpec {
         return *this;
     }
 
-    ChoiceArgumentSpec& setDefaultValue(const T& _defaultValue) {
+    ChoiceArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
         defaultValue = _defaultValue;
+        hasDefaultValue = true;
         return *this;
     }
 
-    ChoiceArgumentSpec& setImplicitValue(const T& _implicitValue) {
+    ChoiceArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
         implicitValue = _implicitValue;
+        hasImplicitValue = true;
         return *this;
     }
 
@@ -83,13 +87,12 @@ class ChoiceArgument : public CommandLineSpec {
         return value;
     }
 
-    bool appeared() const {
+    bool appeared() const override {
         return appearedInArgs;
     }
 
   protected:
-    explicit ChoiceArgument(const ChoiceArgumentSpec<T>& spec)
-            : spec(spec), value(spec.defaultValue) {
+    explicit ChoiceArgument(const ChoiceArgumentSpec<T>& spec): spec(spec) {
     }
 
   private:
@@ -98,13 +101,22 @@ class ChoiceArgument : public CommandLineSpec {
     class MakeSharedEnabler;
 
     void setDefault() override {
-        value = spec.defaultValue;
+        if (!spec.hasDefaultValue) {
+            throw std::invalid_argument(
+              "Trying to set default value for argument " + spec.name
+              + ", which has no default value.");
+        }
+        setValue(spec.defaultValue);
         appearedInArgs = false;
     }
 
     void setImplicit() override {
-        value = spec.implicitValue;
-        appearedInArgs = true;
+        if (!spec.hasImplicitValue) {
+            throw std::invalid_argument(
+              "Trying to set implicit value for argument " + spec.name
+              + ", which has no implicit value.");
+        }
+        setValue(spec.implicitValue);
     }
 
     bool takesNextPositionalArg() const override {
@@ -123,10 +135,9 @@ class ChoiceArgument : public CommandLineSpec {
                 first = false;
                 renderedOptions += "'" + option.first + "'";
             }
-            throw std::invalid_argument("Trying to set option `" + _value
-                                        + "` to argument with "
-                                          "options ["
-                                        + renderedOptions + "]");
+            throw std::invalid_argument(
+              "Trying to set option `" + _value + "` to argument " + spec.name
+              + ", which has options [" + renderedOptions + "]");
         }
         value = optionsIterator->second;
         appearedInArgs = true;

@@ -91,9 +91,7 @@ class Parser {
     template<class T>
     ChoiceArgument<T> addChoiceArgument(const ChoiceArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
-        ChoiceArgument<T> arg = std::make_shared<
-          typename internal::ChoiceArgument<T>::MakeSharedEnabler>(spec);
-        addSpec(arg, spec.name, spec.shortName);
+
         std::string renderedOptions;
         bool first = true;
         for (const std::pair<std::string, T>& option: spec.options) {
@@ -103,21 +101,34 @@ class Parser {
             first = false;
             renderedOptions += "'" + option.first + "'";
         }
+        renderedOptions = "[" + renderedOptions + "]";
+
+        if (spec.hasDefaultValue && !spec.options.count(spec.defaultValue)) {
+            throw std::runtime_error("Invalid default value `"
+                                     + spec.defaultValue
+                                     + "` for choice argument " + spec.name
+                                     + ": options are " + renderedOptions);
+        }
+        if (spec.hasImplicitValue && !spec.options.count(spec.implicitValue)) {
+            throw std::runtime_error("Invalid implicit value `"
+                                     + spec.implicitValue
+                                     + "` for choice argument " + spec.name
+                                     + ": options are " + renderedOptions);
+        }
+        ChoiceArgument<T> arg = std::make_shared<
+          typename internal::ChoiceArgument<T>::MakeSharedEnabler>(spec);
+        addSpec(arg, spec.name, spec.shortName);
         addHelp(spec.helpGroup,
                 spec.name,
                 spec.shortName,
                 spec.description,
-                "\t\tDefault: " + toString(spec.defaultValue)
-                  + ", Implicit: " + toString(spec.implicitValue)
-                  + ", allowed values: [" + renderedOptions + "]");
+                "\t\tDefault: " + spec.defaultValue
+                  + ", Implicit: " + spec.implicitValue
+                  + ", allowed values: " + renderedOptions);
         return arg;
     }
 
     ArgList parse(const ArgList& args) {
-        for (const CommandLineSpecPtr& spec: specs) {
-            spec->setDefault();
-        }
-
         ArgList positionalArguments;
         std::string lastShortName;
         bool onlyPositional = false;
@@ -199,6 +210,12 @@ class Parser {
         }
         if (!lastShortName.empty()) {
             applyImplicit(lastShortName);
+        }
+
+        for (const CommandLineSpecPtr& spec: specs) {
+            if (!spec->appeared()) {
+                spec->setDefault();
+            }
         }
 
         for (const auto& flag: terminalFlags) {

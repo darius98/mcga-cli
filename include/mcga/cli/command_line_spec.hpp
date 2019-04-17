@@ -21,6 +21,8 @@ class CommandLineSpec {
   private:
     MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
 
+    virtual bool appeared() const = 0;
+
     virtual bool takesNextPositionalArg() const = 0;
 
     virtual void setDefault() = 0;
