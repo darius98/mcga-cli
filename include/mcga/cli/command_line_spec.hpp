@@ -31,7 +31,9 @@ class CommandLineSpec {
 
     virtual const std::string& getName() const = 0;
 
-    virtual bool takesNextPositionalArg() const = 0;
+    virtual bool takesNextPositionalArg() const {
+        return true;
+    }
 
     virtual void setDefault() = 0;
 

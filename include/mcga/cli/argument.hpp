@@ -78,10 +78,6 @@ class Argument : public CommandLineSpec {
         return spec.name;
     }
 
-    bool takesNextPositionalArg() const override {
-        return true;
-    }
-
     void setDefault() override {
         value = spec.defaultValue;
     }

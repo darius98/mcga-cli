@@ -85,10 +85,6 @@ class NumericArgument : public CommandLineSpec {
         value = spec.implicitValue;
     }
 
-    bool takesNextPositionalArg() const override {
-        return true;
-    }
-
     void setValue(const std::string& _value) override;
 
     NumericArgumentSpec<T> spec;

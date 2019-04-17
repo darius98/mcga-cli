@@ -110,10 +110,6 @@ class ChoiceArgument : public CommandLineSpec {
         setValue(spec.implicitValue);
     }
 
-    bool takesNextPositionalArg() const override {
-        return true;
-    }
-
     void setValue(const std::string& _value) override {
         auto optionsIterator = spec.options.find(_value);
         if (optionsIterator == spec.options.end()) {
