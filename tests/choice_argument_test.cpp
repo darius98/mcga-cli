@@ -3,15 +3,16 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <mcga/cli.hpp>
+#include "mcga/cli.hpp"
 
 using mcga::cli::ChoiceArgumentSpec;
 using mcga::cli::Parser;
+using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::cli::ChoiceArgumentSpec;
-using mcga::cli::Parser;
+using mcga::test::matchers::isEqualTo;
+using mcga::test::matchers::throwsA;
 using std::invalid_argument;
 using std::map;
 using std::string;

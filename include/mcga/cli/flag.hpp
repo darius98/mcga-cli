@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include <mcga/cli/choice_argument.hpp>
-#include <mcga/cli/command_line_spec.hpp>
+#include "choice_argument.hpp"
+#include "command_line_spec.hpp"
 
 namespace mcga::cli {
 
@@ -35,6 +35,9 @@ struct FlagSpec {
 namespace internal {
 
 class Flag : public internal::ChoiceArgument<bool> {
+  public:
+    ~Flag() override = default;
+
   private:
     class FlagMakeSharedEnabler;
 
@@ -53,6 +56,8 @@ class Flag : public internal::ChoiceArgument<bool> {
                                              false,
                                              true) {
     }
+
+    MCGA_DISALLOW_COPY_AND_MOVE(Flag);
 
     bool takesNextPositionalArg() const override {
         return false;

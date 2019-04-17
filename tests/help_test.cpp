@@ -6,7 +6,7 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <mcga/cli.hpp>
+#include "mcga/cli.hpp"
 
 using mcga::cli::ArgumentSpec;
 using mcga::cli::FlagSpec;
@@ -15,6 +15,8 @@ using mcga::cli::Parser;
 using mcga::cli::FlagSpec;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
+using mcga::test::test;
+using mcga::test::matchers::isEqualTo;
 
 TEST_CASE(McgaCliHelp, "Help") {
     Parser* parser = nullptr;

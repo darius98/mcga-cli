@@ -1,12 +1,23 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <mcga/cli.hpp>
+#include "mcga/cli.hpp"
 
-using namespace mcga::test;
-using namespace mcga::test::matchers;
-using namespace mcga::cli;
-using namespace std;
+using mcga::cli::Flag;
+using mcga::cli::FlagSpec;
+using mcga::cli::Parser;
+using mcga::test::expect;
+using mcga::test::setUp;
+using mcga::test::tearDown;
+using mcga::test::test;
+using mcga::test::matchers::isEqualTo;
+using mcga::test::matchers::isFalse;
+using mcga::test::matchers::isTrue;
+using mcga::test::matchers::throwsA;
+using std::invalid_argument;
+using std::string;
+using std::vector;
+
 
 TEST_CASE(McgaCliFlag, "Flag") {
     Parser* parser = nullptr;

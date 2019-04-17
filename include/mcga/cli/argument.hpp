@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include <mcga/cli/command_line_spec.hpp>
-#include <mcga/cli/disallow_copy_and_move.hpp>
+#include "command_line_spec.hpp"
+#include "disallow_copy_and_move.hpp"
 
 namespace mcga::cli {
 
@@ -50,8 +50,6 @@ namespace internal {
 
 class Argument : public CommandLineSpec {
   public:
-    MCGA_DISALLOW_COPY_AND_MOVE(Argument);
-
     ~Argument() override = default;
 
     std::string getValue() const {
@@ -69,6 +67,8 @@ class Argument : public CommandLineSpec {
             : defaultValue(std::move(defaultValue)),
               implicitValue(std::move(implicitValue)) {
     }
+
+    MCGA_DISALLOW_COPY_AND_MOVE(Argument);
 
     bool takesNextPositionalArg() const override {
         return true;

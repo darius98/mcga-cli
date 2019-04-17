@@ -5,7 +5,8 @@
 #include <utility>
 #include <vector>
 
-#include <mcga/cli/command_line_spec.hpp>
+#include "command_line_spec.hpp"
+#include "disallow_copy_and_move.hpp"
 
 namespace mcga::cli {
 
@@ -72,6 +73,8 @@ namespace internal {
 template<class T>
 class ChoiceArgument : public CommandLineSpec {
   public:
+    ~ChoiceArgument() override = default;
+
     T getValue() const {
         return value;
     }
@@ -91,6 +94,8 @@ class ChoiceArgument : public CommandLineSpec {
     }
 
   private:
+    MCGA_DISALLOW_COPY_AND_MOVE(ChoiceArgument);
+
     class MakeSharedEnabler;
 
     void setDefault() override {

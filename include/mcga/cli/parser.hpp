@@ -5,11 +5,11 @@
 #include <set>
 #include <vector>
 
-#include <mcga/cli/argument.hpp>
-#include <mcga/cli/choice_argument.hpp>
-#include <mcga/cli/command_line_spec.hpp>
-#include <mcga/cli/flag.hpp>
-#include <mcga/cli/numeric_argument.hpp>
+#include "argument.hpp"
+#include "choice_argument.hpp"
+#include "command_line_spec.hpp"
+#include "flag.hpp"
+#include "numeric_argument.hpp"
 
 namespace mcga::cli {
 
@@ -27,8 +27,9 @@ class Parser {
 
     Argument addArgument(const ArgumentSpec& spec) {
         checkNameAvailability(spec.name, spec.shortName);
-        auto argument = std::make_shared<internal::Argument::MakeSharedEnabler>(
-          spec.defaultValue, spec.implicitValue);
+        Argument argument
+          = std::make_shared<internal::Argument::MakeSharedEnabler>(
+            spec.defaultValue, spec.implicitValue);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
         if (!spec.defaultValue.empty() || !spec.implicitValue.empty()) {
@@ -43,7 +44,7 @@ class Parser {
     template<class T>
     NumericArgument<T> addNumericArgument(const NumericArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
-        auto argument = std::make_shared<
+        NumericArgument<T> argument = std::make_shared<
           typename internal::NumericArgument<T>::MakeSharedEnabler>(
           spec.defaultValue, spec.implicitValue);
         addSpec(argument, spec.name, spec.shortName);
@@ -62,7 +63,7 @@ class Parser {
 
     Flag addFlag(const FlagSpec& spec) {
         checkNameAvailability(spec.name, spec.shortName);
-        auto flag = std::make_shared<internal::Flag::FlagMakeSharedEnabler>();
+        Flag flag = std::make_shared<internal::Flag::FlagMakeSharedEnabler>();
         addSpec(flag, spec.name, spec.shortName);
         addHelp(spec.helpGroup,
                 spec.name,
@@ -91,7 +92,7 @@ class Parser {
     template<class T>
     ChoiceArgument<T> addChoiceArgument(const ChoiceArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
-        auto arg = std::make_shared<
+        ChoiceArgument<T> arg = std::make_shared<
           typename internal::ChoiceArgument<T>::MakeSharedEnabler>(
           spec.options, spec.defaultValue, spec.implicitValue);
         addSpec(arg, spec.name, spec.shortName);

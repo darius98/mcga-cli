@@ -1,17 +1,18 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <mcga/cli.hpp>
+#include "mcga/cli.hpp"
 
 using mcga::cli::Argument;
 using mcga::cli::ArgumentSpec;
 using mcga::cli::Parser;
+using mcga::test::expect;
 using mcga::test::group;
 using mcga::test::setUp;
 using mcga::test::tearDown;
-using mcga::cli::Argument;
-using mcga::cli::ArgumentSpec;
-using mcga::cli::Parser;
+using mcga::test::test;
+using mcga::test::matchers::isEqualTo;
+using mcga::test::matchers::throwsA;
 using std::runtime_error;
 using std::string;
 using std::vector;

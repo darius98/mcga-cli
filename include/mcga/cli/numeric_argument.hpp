@@ -1,10 +1,10 @@
 #pragma once
-#pragma ide diagnostic ignored "google-runtime-int"
 
 #include <string>
 #include <type_traits>
 
-#include <mcga/cli/command_line_spec.hpp>
+#include "command_line_spec.hpp"
+#include "disallow_copy_and_move.hpp"
 
 namespace mcga::cli {
 
@@ -53,6 +53,8 @@ template<class T,
          class = typename std::enable_if<std::is_arithmetic<T>::value>::type>
 class NumericArgument : public CommandLineSpec {
   public:
+    ~NumericArgument() override = default;
+
     T getValue() const {
         return value;
     }
@@ -68,7 +70,7 @@ class NumericArgument : public CommandLineSpec {
             : defaultValue(_defaultValue), implicitValue(_implicitValue) {
     }
 
-    ~NumericArgument() override = default;
+    MCGA_DISALLOW_COPY_AND_MOVE(NumericArgument);
 
     void setDefault() override {
         value = defaultValue;

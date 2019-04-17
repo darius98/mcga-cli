@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <mcga/cli/disallow_copy_and_move.hpp>
+#include "disallow_copy_and_move.hpp"
 
 namespace mcga::cli {
 
