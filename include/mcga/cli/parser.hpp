@@ -129,6 +129,10 @@ class Parser {
     }
 
     ArgList parse(const ArgList& args) {
+        for (const CommandLineSpecPtr& spec: specs) {
+            spec->appearedInArgs = false;
+        }
+
         ArgList positionalArguments;
         std::string lastShortName;
         bool onlyPositional = false;
@@ -214,7 +218,7 @@ class Parser {
 
         for (const CommandLineSpecPtr& spec: specs) {
             if (!spec->appeared()) {
-                spec->setDefault();
+                spec->setDefaultGuarded();
             }
         }
 
@@ -268,14 +272,14 @@ class Parser {
     void applyValue(const std::string& cliString, const std::string& value) {
         auto specIterator = specsByCliString.find(cliString);
         if (specIterator != specsByCliString.end()) {
-            specIterator->second->setValue(value);
+            specIterator->second->setValueGuarded(value);
         }
     }
 
     void applyImplicit(const std::string& cliString) {
         auto specIterator = specsByCliString.find(cliString);
         if (specIterator != specsByCliString.end()) {
-            specIterator->second->setImplicit();
+            specIterator->second->setImplicitGuarded();
         }
     }
 

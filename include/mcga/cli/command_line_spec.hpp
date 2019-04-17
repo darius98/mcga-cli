@@ -14,14 +14,21 @@ namespace mcga::cli::internal {
 
 class CommandLineSpec {
   protected:
-    CommandLineSpec() = default;
+    CommandLineSpec(bool hasDefaultValue, bool hasImplicitValue)
+            : hasDefaultValue(hasDefaultValue),
+              hasImplicitValue(hasImplicitValue) {
+    }
 
     virtual ~CommandLineSpec() = default;
+
+    bool appeared() const {
+        return appearedInArgs;
+    }
 
   private:
     MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
 
-    virtual bool appeared() const = 0;
+    virtual const std::string& getName() const = 0;
 
     virtual bool takesNextPositionalArg() const = 0;
 
@@ -30,6 +37,35 @@ class CommandLineSpec {
     virtual void setImplicit() = 0;
 
     virtual void setValue(const std::string& value) = 0;
+
+    void setDefaultGuarded() {
+        if (!hasDefaultValue) {
+            throw std::invalid_argument(
+              "Trying to set default value for argument " + getName()
+              + ", which has no default value.");
+        }
+        setDefault();
+        appearedInArgs = false;
+    }
+
+    void setImplicitGuarded() {
+        if (!hasImplicitValue) {
+            throw std::invalid_argument(
+              "Trying to set implicit value for argument " + getName()
+              + ", which has no implicit value.");
+        }
+        setImplicit();
+        appearedInArgs = true;
+    }
+
+    void setValueGuarded(const std::string& value) {
+        setValue(value);
+        appearedInArgs = true;
+    }
+
+    bool appearedInArgs = false;
+    bool hasDefaultValue;
+    bool hasImplicitValue;
 
     friend class mcga::cli::Parser;
 };

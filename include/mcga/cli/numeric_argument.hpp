@@ -63,36 +63,26 @@ class NumericArgument : public CommandLineSpec {
         return value;
     }
 
-    bool appeared() const override {
-        return appearedInArgs;
-    }
-
   private:
     class MakeSharedEnabler;
 
-    explicit NumericArgument(const NumericArgumentSpec<T>& spec): spec(spec) {
+    explicit NumericArgument(const NumericArgumentSpec<T>& spec)
+            : CommandLineSpec(spec.hasDefaultValue, spec.hasImplicitValue),
+              spec(spec) {
     }
 
     MCGA_DISALLOW_COPY_AND_MOVE(NumericArgument);
 
+    const std::string& getName() const override {
+        return spec.name;
+    }
+
     void setDefault() override {
-        if (!spec.hasDefaultValue) {
-            throw std::invalid_argument(
-              "Trying to set default value for argument " + spec.name
-              + ", which has no default value.");
-        }
         value = spec.defaultValue;
-        appearedInArgs = false;
     }
 
     void setImplicit() override {
-        if (!spec.hasImplicitValue) {
-            throw std::invalid_argument(
-              "Trying to set implicit value for argument " + spec.name
-              + ", which has no implicit value.");
-        }
         value = spec.implicitValue;
-        appearedInArgs = true;
     }
 
     bool takesNextPositionalArg() const override {
@@ -103,7 +93,6 @@ class NumericArgument : public CommandLineSpec {
 
     NumericArgumentSpec<T> spec;
     T value;
-    bool appearedInArgs = false;
 
     friend class mcga::cli::Parser;
 };
@@ -126,83 +115,70 @@ namespace internal {
 template<>
 inline void NumericArgument<char>::setValue(const std::string& _value) {
     value = static_cast<char>(std::stoi(_value));
-    appearedInArgs = true;
 }
 
 template<>
 inline void
   NumericArgument<unsigned char>::setValue(const std::string& _value) {
     value = static_cast<unsigned char>(std::stoul(_value));
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<short int>::setValue(const std::string& _value) {
     value = static_cast<short int>(std::stoi(_value));
-    appearedInArgs = true;
 }
 
 template<>
 inline void
   NumericArgument<unsigned short int>::setValue(const std::string& _value) {
     value = static_cast<unsigned short int>(std::stoul(_value));
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<int>::setValue(const std::string& _value) {
     value = std::stoi(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<unsigned int>::setValue(const std::string& _value) {
     value = static_cast<unsigned int>(std::stoul(_value));
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<long>::setValue(const std::string& _value) {
     value = std::stol(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void
   NumericArgument<unsigned long>::setValue(const std::string& _value) {
     value = std::stoul(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<long long>::setValue(const std::string& _value) {
     value = std::stoll(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void
   NumericArgument<unsigned long long>::setValue(const std::string& _value) {
     value = std::stoull(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<float>::setValue(const std::string& _value) {
     value = std::stof(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<double>::setValue(const std::string& _value) {
     value = std::stod(_value);
-    appearedInArgs = true;
 }
 
 template<>
 inline void NumericArgument<long double>::setValue(const std::string& _value) {
     value = std::stold(_value);
-    appearedInArgs = true;
 }
 
 }  // namespace internal
