@@ -13,6 +13,11 @@ class Parser;
 namespace mcga::cli::internal {
 
 class CommandLineSpec {
+  public:
+    bool appeared() const {
+        return appearedInArgs;
+    }
+
   protected:
     CommandLineSpec(bool hasDefaultValue, bool hasImplicitValue)
             : hasDefaultValue(hasDefaultValue),
@@ -20,10 +25,6 @@ class CommandLineSpec {
     }
 
     virtual ~CommandLineSpec() = default;
-
-    bool appeared() const {
-        return appearedInArgs;
-    }
 
   private:
     MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
