@@ -14,8 +14,10 @@ struct ArgumentSpec {
     std::string description = "";
     std::string helpGroup = "";
     std::string shortName = "";
-    std::string defaultValue = "";
-    std::string implicitValue = "";
+    bool hasDefaultValue = false;
+    std::string defaultValue;
+    bool hasImplicitValue = false;
+    std::string implicitValue;
 
     explicit ArgumentSpec(std::string name): name(std::move(name)) {
     }
@@ -37,11 +39,13 @@ struct ArgumentSpec {
 
     ArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
         defaultValue = _defaultValue;
+        hasDefaultValue = true;
         return *this;
     }
 
     ArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
         implicitValue = _implicitValue;
+        hasImplicitValue = true;
         return *this;
     }
 };
@@ -77,11 +81,21 @@ class Argument : public CommandLineSpec {
     }
 
     void setDefault() override {
+        if (!spec.hasDefaultValue) {
+            throw std::invalid_argument(
+              "Trying to set default value for argument " + spec.name
+              + ", which has no default value.");
+        }
         value = spec.defaultValue;
         appearedInArgs = false;
     }
 
     void setImplicit() override {
+        if (!spec.hasImplicitValue) {
+            throw std::invalid_argument(
+              "Trying to set implicit value for argument " + spec.name
+              + ", which has no implicit value.");
+        }
         value = spec.implicitValue;
         appearedInArgs = true;
     }

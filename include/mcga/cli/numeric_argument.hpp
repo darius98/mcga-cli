@@ -15,8 +15,10 @@ struct NumericArgumentSpec {
     std::string description = "";
     std::string helpGroup = "";
     std::string shortName = "";
-    T defaultValue = 0;
-    T implicitValue = 0;
+    bool hasDefaultValue = false;
+    T defaultValue;
+    bool hasImplicitValue = false;
+    T implicitValue;
 
     explicit NumericArgumentSpec(std::string _name): name(std::move(_name)) {
     }
@@ -36,13 +38,15 @@ struct NumericArgumentSpec {
         return *this;
     }
 
-    NumericArgumentSpec& setDefaultValue(T _defaultValue) {
-        defaultValue = std::move(_defaultValue);
+    NumericArgumentSpec& setDefaultValue(const T& _defaultValue) {
+        defaultValue = _defaultValue;
+        hasDefaultValue = true;
         return *this;
     }
 
-    NumericArgumentSpec& setImplicitValue(T _implicitValue) {
-        implicitValue = std::move(_implicitValue);
+    NumericArgumentSpec& setImplicitValue(const T& _implicitValue) {
+        implicitValue = _implicitValue;
+        hasImplicitValue = true;
         return *this;
     }
 };
@@ -72,11 +76,21 @@ class NumericArgument : public CommandLineSpec {
     MCGA_DISALLOW_COPY_AND_MOVE(NumericArgument);
 
     void setDefault() override {
+        if (!spec.hasDefaultValue) {
+            throw std::invalid_argument(
+              "Trying to set default value for argument " + spec.name
+              + ", which has no default value.");
+        }
         value = spec.defaultValue;
         appearedInArgs = false;
     }
 
     void setImplicit() override {
+        if (!spec.hasImplicitValue) {
+            throw std::invalid_argument(
+              "Trying to set implicit value for argument " + spec.name
+              + ", which has no implicit value.");
+        }
         value = spec.implicitValue;
         appearedInArgs = true;
     }
