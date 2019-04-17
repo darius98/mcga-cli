@@ -66,19 +66,18 @@ class NumericArgument : public CommandLineSpec {
   private:
     class MakeSharedEnabler;
 
-    NumericArgument(T _defaultValue, T _implicitValue)
-            : defaultValue(_defaultValue), implicitValue(_implicitValue) {
+    explicit NumericArgument(const NumericArgumentSpec<T>& spec): spec(spec) {
     }
 
     MCGA_DISALLOW_COPY_AND_MOVE(NumericArgument);
 
     void setDefault() override {
-        value = defaultValue;
+        value = spec.defaultValue;
         appearedInArgs = false;
     }
 
     void setImplicit() override {
-        value = implicitValue;
+        value = spec.implicitValue;
         appearedInArgs = true;
     }
 
@@ -88,9 +87,8 @@ class NumericArgument : public CommandLineSpec {
 
     void setValue(const std::string& _value) override;
 
+    NumericArgumentSpec<T> spec;
     T value;
-    T defaultValue;
-    T implicitValue;
     bool appearedInArgs = false;
 
     friend class mcga::cli::Parser;
@@ -99,9 +97,8 @@ class NumericArgument : public CommandLineSpec {
 template<class T, class S>
 class NumericArgument<T, S>::MakeSharedEnabler : public NumericArgument<T, S> {
   public:
-    MakeSharedEnabler(T _defaultValue, T _implicitValue)
-            : NumericArgument<T, S>(std::move(_defaultValue),
-                                    std::move(_implicitValue)) {
+    explicit MakeSharedEnabler(const NumericArgumentSpec<T>& spec)
+            : NumericArgument<T, S>(spec) {
     }
 };
 

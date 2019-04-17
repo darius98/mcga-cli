@@ -75,6 +75,10 @@ class ChoiceArgument : public CommandLineSpec {
   public:
     ~ChoiceArgument() override = default;
 
+    const ChoiceArgumentSpec<T>& getSpec() const {
+        return spec;
+    }
+
     T getValue() const {
         return value;
     }
@@ -84,13 +88,8 @@ class ChoiceArgument : public CommandLineSpec {
     }
 
   protected:
-    ChoiceArgument(std::map<std::string, T> _options,
-                   T _defaultValue,
-                   T _implicitValue)
-            : options(std::move(_options)),
-              defaultValue(std::move(_defaultValue)),
-              implicitValue(std::move(_implicitValue)) {
-        value = defaultValue;
+    explicit ChoiceArgument(const ChoiceArgumentSpec<T>& spec)
+            : spec(spec), value(spec.defaultValue) {
     }
 
   private:
@@ -99,12 +98,12 @@ class ChoiceArgument : public CommandLineSpec {
     class MakeSharedEnabler;
 
     void setDefault() override {
-        value = defaultValue;
+        value = spec.defaultValue;
         appearedInArgs = false;
     }
 
     void setImplicit() override {
-        value = implicitValue;
+        value = spec.implicitValue;
         appearedInArgs = true;
     }
 
@@ -113,11 +112,11 @@ class ChoiceArgument : public CommandLineSpec {
     }
 
     void setValue(const std::string& _value) override {
-        auto optionsIterator = options.find(_value);
-        if (optionsIterator == options.end()) {
+        auto optionsIterator = spec.options.find(_value);
+        if (optionsIterator == spec.options.end()) {
             std::string renderedOptions;
             bool first = true;
-            for (const std::pair<std::string, T>& option: options) {
+            for (const std::pair<std::string, T>& option: spec.options) {
                 if (!first) {
                     renderedOptions += ",";
                 }
@@ -133,10 +132,8 @@ class ChoiceArgument : public CommandLineSpec {
         appearedInArgs = true;
     }
 
+    ChoiceArgumentSpec<T> spec;
     T value;
-    std::map<std::string, T> options;
-    T defaultValue;
-    T implicitValue;
     bool appearedInArgs = false;
 
     friend class mcga::cli::Parser;
@@ -145,12 +142,8 @@ class ChoiceArgument : public CommandLineSpec {
 template<class T>
 class ChoiceArgument<T>::MakeSharedEnabler : public ChoiceArgument<T> {
   public:
-    MakeSharedEnabler(std::map<std::string, T> options,
-                      T defaultValue,
-                      T implicitValue)
-            : ChoiceArgument<T>(std::move(options),
-                                std::move(defaultValue),
-                                std::move(implicitValue)) {
+    explicit MakeSharedEnabler(const ChoiceArgumentSpec<T>& spec)
+            : ChoiceArgument<T>(spec) {
     }
 };
 

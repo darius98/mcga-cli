@@ -41,20 +41,25 @@ class Flag : public internal::ChoiceArgument<bool> {
   private:
     class FlagMakeSharedEnabler;
 
-    Flag()
-            : internal::ChoiceArgument<bool>({{"1", true},
-                                              {"true", true},
-                                              {"TRUE", true},
-                                              {"enabled", true},
-                                              {"ENABLED", true},
+    explicit Flag(const FlagSpec& spec)
+            : internal::ChoiceArgument<bool>(
+              ChoiceArgumentSpec<bool>(spec.name)
+                .setShortName(spec.shortName)
+                .setDescription(spec.description)
+                .setHelpGroup(spec.helpGroup)
+                .setOptions({{"1", true},
+                             {"true", true},
+                             {"TRUE", true},
+                             {"enabled", true},
+                             {"ENABLED", true},
 
-                                              {"0", false},
-                                              {"false", false},
-                                              {"FALSE", false},
-                                              {"disabled", false},
-                                              {"DISABLED", false}},
-                                             false,
-                                             true) {
+                             {"0", false},
+                             {"false", false},
+                             {"FALSE", false},
+                             {"disabled", false},
+                             {"DISABLED", false}})
+                .setDefaultValue(false)
+                .setImplicitValue(true)) {
     }
 
     MCGA_DISALLOW_COPY_AND_MOVE(Flag);
@@ -68,7 +73,8 @@ class Flag : public internal::ChoiceArgument<bool> {
 
 class Flag::FlagMakeSharedEnabler : public Flag {
   public:
-    FlagMakeSharedEnabler() = default;
+    explicit FlagMakeSharedEnabler(const FlagSpec& spec): Flag(spec) {
+    }
 };
 
 }  // namespace internal

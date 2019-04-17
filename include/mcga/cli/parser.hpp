@@ -28,8 +28,7 @@ class Parser {
     Argument addArgument(const ArgumentSpec& spec) {
         checkNameAvailability(spec.name, spec.shortName);
         Argument argument
-          = std::make_shared<internal::Argument::MakeSharedEnabler>(
-            spec.defaultValue, spec.implicitValue);
+          = std::make_shared<internal::Argument::MakeSharedEnabler>(spec);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
         if (!spec.defaultValue.empty() || !spec.implicitValue.empty()) {
@@ -45,8 +44,7 @@ class Parser {
     NumericArgument<T> addNumericArgument(const NumericArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
         NumericArgument<T> argument = std::make_shared<
-          typename internal::NumericArgument<T>::MakeSharedEnabler>(
-          spec.defaultValue, spec.implicitValue);
+          typename internal::NumericArgument<T>::MakeSharedEnabler>(spec);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
         if (spec.defaultValue != 0 || spec.implicitValue != 0) {
@@ -63,7 +61,8 @@ class Parser {
 
     Flag addFlag(const FlagSpec& spec) {
         checkNameAvailability(spec.name, spec.shortName);
-        Flag flag = std::make_shared<internal::Flag::FlagMakeSharedEnabler>();
+        Flag flag
+          = std::make_shared<internal::Flag::FlagMakeSharedEnabler>(spec);
         addSpec(flag, spec.name, spec.shortName);
         addHelp(spec.helpGroup,
                 spec.name,
@@ -93,8 +92,7 @@ class Parser {
     ChoiceArgument<T> addChoiceArgument(const ChoiceArgumentSpec<T>& spec) {
         checkNameAvailability(spec.name, spec.shortName);
         ChoiceArgument<T> arg = std::make_shared<
-          typename internal::ChoiceArgument<T>::MakeSharedEnabler>(
-          spec.options, spec.defaultValue, spec.implicitValue);
+          typename internal::ChoiceArgument<T>::MakeSharedEnabler>(spec);
         addSpec(arg, spec.name, spec.shortName);
         std::string renderedOptions;
         bool first = true;

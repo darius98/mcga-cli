@@ -60,12 +60,14 @@ class Argument : public CommandLineSpec {
         return appearedInArgs;
     }
 
+    const ArgumentSpec& getSpec() const {
+        return spec;
+    }
+
   private:
     class MakeSharedEnabler;
 
-    Argument(std::string defaultValue, std::string implicitValue)
-            : defaultValue(std::move(defaultValue)),
-              implicitValue(std::move(implicitValue)) {
+    explicit Argument(ArgumentSpec spec): spec(std::move(spec)) {
     }
 
     MCGA_DISALLOW_COPY_AND_MOVE(Argument);
@@ -75,12 +77,12 @@ class Argument : public CommandLineSpec {
     }
 
     void setDefault() override {
-        value = defaultValue;
+        value = spec.defaultValue;
         appearedInArgs = false;
     }
 
     void setImplicit() override {
-        value = implicitValue;
+        value = spec.implicitValue;
         appearedInArgs = true;
     }
 
@@ -89,10 +91,8 @@ class Argument : public CommandLineSpec {
         appearedInArgs = true;
     }
 
-  private:
+    ArgumentSpec spec;
     std::string value;
-    std::string defaultValue;
-    std::string implicitValue;
     bool appearedInArgs = false;
 
     friend class mcga::cli::Parser;
@@ -100,8 +100,7 @@ class Argument : public CommandLineSpec {
 
 class Argument::MakeSharedEnabler : public Argument {
   public:
-    MakeSharedEnabler(std::string defaultValue, std::string implicitValue)
-            : Argument(std::move(defaultValue), std::move(implicitValue)) {
+    explicit MakeSharedEnabler(ArgumentSpec spec): Argument(std::move(spec)) {
     }
 };
 
