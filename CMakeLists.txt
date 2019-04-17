@@ -21,7 +21,7 @@ if (MCGA_cli_tests)
             tests/numeric_argument_test.cpp
             tests/parser_test.cpp
             )
-    target_link_libraries(mcga_cli_test kktest mcga_cli)
+    target_link_libraries(mcga_cli_test mcga_test mcga_cli)
 endif ()
 
 if (MCGA_cli_examples)
