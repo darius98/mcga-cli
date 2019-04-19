@@ -1,20 +1,20 @@
+#include <mcga/matchers.hpp>
 #include <mcga/test.hpp>
-#include <mcga/test_ext/matchers.hpp>
 
 #include "mcga/cli.hpp"
 
 using mcga::cli::Argument;
 using mcga::cli::ArgumentSpec;
 using mcga::cli::Parser;
+using mcga::matchers::isEqualTo;
+using mcga::matchers::isFalse;
+using mcga::matchers::isTrue;
+using mcga::matchers::throwsA;
+using mcga::test::expect;
 using mcga::test::group;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::matchers::expect;
-using mcga::test::matchers::isEqualTo;
-using mcga::test::matchers::isFalse;
-using mcga::test::matchers::isTrue;
-using mcga::test::matchers::throwsA;
 using std::invalid_argument;
 using std::runtime_error;
 using std::string;

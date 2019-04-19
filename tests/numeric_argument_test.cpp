@@ -1,19 +1,19 @@
 #pragma ide diagnostic ignored "google-runtime-int"
 #pragma ide diagnostic ignored "readability-magic-numbers"
 
+#include <mcga/matchers.hpp>
 #include <mcga/test.hpp>
-#include <mcga/test_ext/matchers.hpp>
 
 #include "mcga/cli.hpp"
 
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
+using mcga::matchers::isEqualTo;
+using mcga::matchers::throwsA;
 using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::matchers::isEqualTo;
-using mcga::test::matchers::throwsA;
 using std::invalid_argument;
 
 TEST_CASE(McgaCliNumericArgument, "Numeric argument") {

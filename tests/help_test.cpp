@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include <mcga/matchers.hpp>
 #include <mcga/test.hpp>
-#include <mcga/test_ext/matchers.hpp>
 
 #include "mcga/cli.hpp"
 
@@ -12,14 +12,11 @@ using mcga::cli::ArgumentSpec;
 using mcga::cli::FlagSpec;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
-using mcga::cli::FlagSpec;
-using mcga::cli::NumericArgumentSpec;
-using mcga::cli::Parser;
+using mcga::matchers::isEqualTo;
 using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::matchers::isEqualTo;
 
 TEST_CASE(McgaCliHelp, "Help") {
     Parser* parser = nullptr;
