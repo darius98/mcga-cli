@@ -1,8 +1,8 @@
 #pragma ide diagnostic ignored "google-runtime-int"
 #pragma ide diagnostic ignored "readability-magic-numbers"
 
-#include <mcga/matchers.hpp>
 #include <mcga/test.hpp>
+#include <mcga/test_ext/matchers.hpp>
 
 #include "mcga/cli.hpp"
 
