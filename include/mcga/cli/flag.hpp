@@ -36,7 +36,7 @@ namespace internal {
 
 class Flag : public internal::ChoiceArgument<bool> {
   public:
-    ~Flag() override = default;
+    ~Flag() = default;
 
   private:
     class FlagMakeSharedEnabler;

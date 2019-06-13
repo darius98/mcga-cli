@@ -31,9 +31,16 @@ class Parser {
           = std::make_shared<internal::Argument::MakeSharedEnabler>(spec);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
-        if (!spec.defaultValue.empty() || !spec.implicitValue.empty()) {
-            extra = "\t\tDefault: '" + spec.defaultValue + "', Implicit: '"
-              + spec.implicitValue + "'";
+        if (spec.defaultValue.has_value() && spec.implicitValue.has_value()) {
+            extra = "\t\tDefault: '"
+              + spec.defaultValue.value().getDescription() + "', Implicit: '"
+              + spec.implicitValue.value().getDescription() + "'";
+        } else if (spec.defaultValue.has_value()) {
+            extra = "\t\tDefault: '"
+              + spec.defaultValue.value().getDescription() + "'";
+        } else if (spec.implicitValue.has_value()) {
+            extra = "\t\tImplicit: '"
+              + spec.implicitValue.value().getDescription() + "'";
         }
         addHelp(
           spec.helpGroup, spec.name, spec.shortName, spec.description, extra);
@@ -47,9 +54,16 @@ class Parser {
           typename internal::NumericArgument<T>::MakeSharedEnabler>(spec);
         addSpec(argument, spec.name, spec.shortName);
         std::string extra;
-        if (spec.defaultValue != 0 || spec.implicitValue != 0) {
-            extra = "\t\tDefault: " + toString(spec.defaultValue)
-              + ", Implicit: " + toString(spec.implicitValue);
+        if (spec.defaultValue.has_value() && spec.implicitValue.has_value()) {
+            extra = "\t\tDefault: '"
+              + spec.defaultValue.value().getDescription() + "', Implicit: '"
+              + spec.implicitValue.value().getDescription() + "'";
+        } else if (spec.defaultValue.has_value()) {
+            extra = "\t\tDefault: '"
+              + spec.defaultValue.value().getDescription() + "'";
+        } else if (spec.implicitValue.has_value()) {
+            extra = "\t\tImplicit: '"
+              + spec.implicitValue.value().getDescription() + "'";
         }
         addHelp(spec.helpGroup,
                 spec.name,
@@ -102,29 +116,27 @@ class Parser {
             renderedOptions += "'" + option.first + "'";
         }
         renderedOptions = "[" + renderedOptions + "]";
-
-        if (spec.hasDefaultValue && !spec.options.count(spec.defaultValue)) {
-            throw std::runtime_error("Invalid default value `"
-                                     + spec.defaultValue
-                                     + "` for choice argument " + spec.name
-                                     + ": options are " + renderedOptions);
-        }
-        if (spec.hasImplicitValue && !spec.options.count(spec.implicitValue)) {
-            throw std::runtime_error("Invalid implicit value `"
-                                     + spec.implicitValue
-                                     + "` for choice argument " + spec.name
-                                     + ": options are " + renderedOptions);
-        }
         ChoiceArgument<T> arg = std::make_shared<
           typename internal::ChoiceArgument<T>::MakeSharedEnabler>(spec);
         addSpec(arg, spec.name, spec.shortName);
-        addHelp(spec.helpGroup,
-                spec.name,
-                spec.shortName,
-                spec.description,
-                "\t\tDefault: " + spec.defaultValue
-                  + ", Implicit: " + spec.implicitValue
-                  + ", allowed values: " + renderedOptions);
+        std::string extra;
+        if (spec.defaultValue.has_value() && spec.implicitValue.has_value()) {
+            extra = "\t\tDefault: '"
+              + spec.defaultValue.value().getDescription() + "', Implicit: '"
+              + spec.implicitValue.value().getDescription()
+              + "', allowed values: " + renderedOptions;
+        } else if (spec.defaultValue.has_value()) {
+            extra = "\t\tDefault: '"
+              + spec.defaultValue.value().getDescription()
+              + "', allowed values: " + renderedOptions;
+        } else if (spec.implicitValue.has_value()) {
+            extra = "\t\tImplicit: '"
+              + spec.implicitValue.value().getDescription()
+              + "', allowed values: " + renderedOptions;
+        }
+
+        addHelp(
+          spec.helpGroup, spec.name, spec.shortName, spec.description, extra);
         return arg;
     }
 

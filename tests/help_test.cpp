@@ -128,8 +128,8 @@ TEST_CASE(McgaCliHelp, "Help") {
           NumericArgumentSpec<int>("vm-heap")
             .setDescription("Interpreter VM max heap size")
             .setHelpGroup("Runtime")
-            .setDefaultValue(1000)
-            .setImplicitValue(1000));
+            .setDefaultValue("1000")
+            .setImplicitValue("1000"));
 
         parser->addArgument(ArgumentSpec("json-config")
                               .setDescription("File to take JSON config from")
@@ -155,6 +155,6 @@ TEST_CASE(McgaCliHelp, "Help") {
                          "\t--interpreter,-I\tInterpreter to use\n"
                          "\t\tDefault: 'python3', Implicit: 'python3'\n"
                          "\t--vm-heap\t(Number)\tInterpreter VM max heap size\n"
-                         "\t\tDefault: 1000, Implicit: 1000\n"));
+                         "\t\tDefault: '1000', Implicit: '1000'\n"));
     });
 }

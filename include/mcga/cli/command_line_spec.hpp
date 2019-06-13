@@ -19,12 +19,12 @@ class CommandLineSpec {
     }
 
   protected:
-    CommandLineSpec(bool hasDefaultValue, bool hasImplicitValue)
-            : hasDefaultValue(hasDefaultValue),
-              hasImplicitValue(hasImplicitValue) {
+    CommandLineSpec(bool _hasDefaultValue, bool _hasImplicitValue)
+            : hasDefaultValue(_hasDefaultValue),
+              hasImplicitValue(_hasImplicitValue) {
     }
 
-    virtual ~CommandLineSpec() = default;
+    ~CommandLineSpec() = default;
 
   private:
     MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);

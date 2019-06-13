@@ -7,6 +7,7 @@
 
 #include "command_line_spec.hpp"
 #include "disallow_copy_and_move.hpp"
+#include "generator.hpp"
 
 namespace mcga::cli {
 
@@ -17,10 +18,8 @@ struct ChoiceArgumentSpec {
     std::string helpGroup = "";
     std::string shortName = "";
     std::map<std::string, T> options;
-    bool hasDefaultValue = false;
-    std::string defaultValue;
-    bool hasImplicitValue = false;
-    std::string implicitValue;
+    std::optional<internal::Generator> defaultValue;
+    std::optional<internal::Generator> implicitValue;
 
     explicit ChoiceArgumentSpec(std::string _name): name(std::move(_name)) {
     }
@@ -41,14 +40,28 @@ struct ChoiceArgumentSpec {
     }
 
     ChoiceArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
-        defaultValue = _defaultValue;
-        hasDefaultValue = true;
+        defaultValue.emplace([_defaultValue]() { return _defaultValue; },
+                             _defaultValue);
+        return *this;
+    }
+
+    ChoiceArgumentSpec& setDefaultValueGenerator(
+      const std::function<std::string()>& defaultValueGenerator,
+      const std::string& defaultValueDescription = "<NO DESCRIPTION>") {
+        defaultValue.emplace(defaultValueGenerator, defaultValueDescription);
         return *this;
     }
 
     ChoiceArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
-        implicitValue = _implicitValue;
-        hasImplicitValue = true;
+        implicitValue.emplace([_implicitValue]() { return _implicitValue; },
+                              _implicitValue);
+        return *this;
+    }
+
+    ChoiceArgumentSpec& setImplicitValueGenerator(
+      const std::function<std::string()>& implicitValueGenerator,
+      const std::string& implicitValueDescription = "<NO DESCRIPTION>") {
+        implicitValue.emplace(implicitValueGenerator, implicitValueDescription);
         return *this;
     }
 
@@ -77,7 +90,7 @@ namespace internal {
 template<class T>
 class ChoiceArgument : public CommandLineSpec {
   public:
-    ~ChoiceArgument() override = default;
+    ~ChoiceArgument() = default;
 
     const ChoiceArgumentSpec<T>& getSpec() const {
         return spec;
@@ -89,7 +102,8 @@ class ChoiceArgument : public CommandLineSpec {
 
   protected:
     explicit ChoiceArgument(const ChoiceArgumentSpec<T>& spec)
-            : CommandLineSpec(spec.hasDefaultValue, spec.hasImplicitValue),
+            : CommandLineSpec(spec.defaultValue.has_value(),
+                              spec.implicitValue.has_value()),
               spec(spec) {
     }
 
@@ -103,11 +117,11 @@ class ChoiceArgument : public CommandLineSpec {
     }
 
     void setDefault() override {
-        setValue(spec.defaultValue);
+        setValue(spec.defaultValue.value().generate());
     }
 
     void setImplicit() override {
-        setValue(spec.implicitValue);
+        setValue(spec.implicitValue.value().generate());
     }
 
     void setValue(const std::string& _value) override {

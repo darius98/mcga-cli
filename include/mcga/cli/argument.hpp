@@ -1,9 +1,11 @@
 #pragma once
 
+#include <optional>
 #include <string>
 
 #include "command_line_spec.hpp"
 #include "disallow_copy_and_move.hpp"
+#include "generator.hpp"
 
 namespace mcga::cli {
 
@@ -14,10 +16,8 @@ struct ArgumentSpec {
     std::string description = "";
     std::string helpGroup = "";
     std::string shortName = "";
-    bool hasDefaultValue = false;
-    std::string defaultValue;
-    bool hasImplicitValue = false;
-    std::string implicitValue;
+    std::optional<internal::Generator> defaultValue;
+    std::optional<internal::Generator> implicitValue;
 
     explicit ArgumentSpec(std::string name): name(std::move(name)) {
     }
@@ -38,14 +38,28 @@ struct ArgumentSpec {
     }
 
     ArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
-        defaultValue = _defaultValue;
-        hasDefaultValue = true;
+        defaultValue.emplace([_defaultValue]() { return _defaultValue; },
+                             _defaultValue);
+        return *this;
+    }
+
+    ArgumentSpec& setDefaultValueGenerator(
+      const std::function<std::string()>& defaultValueGenerator,
+      const std::string& defaultValueDescription = "<NO DESCRIPTION>") {
+        defaultValue.emplace(defaultValueGenerator, defaultValueDescription);
         return *this;
     }
 
     ArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
-        implicitValue = _implicitValue;
-        hasImplicitValue = true;
+        implicitValue.emplace([_implicitValue]() { return _implicitValue; },
+                              _implicitValue);
+        return *this;
+    }
+
+    ArgumentSpec& setImplicitValueGenerator(
+      const std::function<std::string()>& implicitValueGenerator,
+      const std::string& implicitValueDescription = "<NO DESCRIPTION>") {
+        implicitValue.emplace(implicitValueGenerator, implicitValueDescription);
         return *this;
     }
 };
@@ -54,7 +68,7 @@ namespace internal {
 
 class Argument : public CommandLineSpec {
   public:
-    ~Argument() override = default;
+    ~Argument() = default;
 
     std::string getValue() const {
         return value;
@@ -68,7 +82,8 @@ class Argument : public CommandLineSpec {
     class MakeSharedEnabler;
 
     explicit Argument(const ArgumentSpec& spec)
-            : CommandLineSpec(spec.hasDefaultValue, spec.hasImplicitValue),
+            : CommandLineSpec(spec.defaultValue.has_value(),
+                              spec.implicitValue.has_value()),
               spec(spec) {
     }
 
@@ -79,11 +94,11 @@ class Argument : public CommandLineSpec {
     }
 
     void setDefault() override {
-        value = spec.defaultValue;
+        value = spec.defaultValue.value().generate();
     }
 
     void setImplicit() override {
-        value = spec.implicitValue;
+        value = spec.implicitValue.value().generate();
     }
 
     void setValue(const std::string& _value) override {

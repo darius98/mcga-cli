@@ -15,10 +15,8 @@ struct NumericArgumentSpec {
     std::string description = "";
     std::string helpGroup = "";
     std::string shortName = "";
-    bool hasDefaultValue = false;
-    T defaultValue;
-    bool hasImplicitValue = false;
-    T implicitValue;
+    std::optional<internal::Generator> defaultValue;
+    std::optional<internal::Generator> implicitValue;
 
     explicit NumericArgumentSpec(std::string _name): name(std::move(_name)) {
     }
@@ -38,15 +36,29 @@ struct NumericArgumentSpec {
         return *this;
     }
 
-    NumericArgumentSpec& setDefaultValue(const T& _defaultValue) {
-        defaultValue = _defaultValue;
-        hasDefaultValue = true;
+    NumericArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
+        defaultValue.emplace([_defaultValue]() { return _defaultValue; },
+                             _defaultValue);
         return *this;
     }
 
-    NumericArgumentSpec& setImplicitValue(const T& _implicitValue) {
-        implicitValue = _implicitValue;
-        hasImplicitValue = true;
+    NumericArgumentSpec& setDefaultValueGenerator(
+      const std::function<std::string()>& defaultValueGenerator,
+      const std::string& defaultValueDescription = "<NO DESCRIPTION>") {
+        defaultValue.emplace(defaultValueGenerator, defaultValueDescription);
+        return *this;
+    }
+
+    NumericArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
+        implicitValue.emplace([_implicitValue]() { return _implicitValue; },
+                              _implicitValue);
+        return *this;
+    }
+
+    NumericArgumentSpec& setImplicitValueGenerator(
+      const std::function<std::string()>& implicitValueGenerator,
+      const std::string& implicitValueDescription = "<NO DESCRIPTION>") {
+        implicitValue.emplace(implicitValueGenerator, implicitValueDescription);
         return *this;
     }
 };
@@ -57,7 +69,7 @@ template<class T,
          class = typename std::enable_if<std::is_arithmetic<T>::value>::type>
 class NumericArgument : public CommandLineSpec {
   public:
-    ~NumericArgument() override = default;
+    ~NumericArgument() = default;
 
     T getValue() const {
         return value;
@@ -67,7 +79,8 @@ class NumericArgument : public CommandLineSpec {
     class MakeSharedEnabler;
 
     explicit NumericArgument(const NumericArgumentSpec<T>& spec)
-            : CommandLineSpec(spec.hasDefaultValue, spec.hasImplicitValue),
+            : CommandLineSpec(spec.defaultValue.has_value(),
+                              spec.implicitValue.has_value()),
               spec(spec) {
     }
 
@@ -78,11 +91,11 @@ class NumericArgument : public CommandLineSpec {
     }
 
     void setDefault() override {
-        value = spec.defaultValue;
+        setValue(spec.defaultValue.value().generate());
     }
 
     void setImplicit() override {
-        value = spec.implicitValue;
+        setValue(spec.implicitValue.value().generate());
     }
 
     void setValue(const std::string& _value) override;
