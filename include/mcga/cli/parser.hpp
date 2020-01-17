@@ -245,7 +245,8 @@ class Parser {
     }
 
     ArgList parse(int argc, char** argv) {
-        ArgList args(static_cast<std::size_t>(argc));
+        ArgList args;
+        args.reserve(static_cast<std::size_t>(argc));
         for (int i = 0; i < argc; ++i) {
             // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             args.emplace_back(argv[i]);
