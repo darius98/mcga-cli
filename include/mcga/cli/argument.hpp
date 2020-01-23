@@ -68,7 +68,7 @@ namespace internal {
 
 class Argument : public CommandLineSpec {
   public:
-    ~Argument() = default;
+    ~Argument() override = default;
 
     std::string getValue() const {
         return value;

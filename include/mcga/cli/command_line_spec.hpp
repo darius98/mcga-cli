@@ -24,7 +24,7 @@ class CommandLineSpec {
               hasImplicitValue(_hasImplicitValue) {
     }
 
-    ~CommandLineSpec() = default;
+    virtual ~CommandLineSpec() = default;
 
   private:
     MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
