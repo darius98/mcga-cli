@@ -124,8 +124,8 @@ TEST_CASE(McgaCliHelp, "Help") {
                              .set_default_value("python3")
                              .set_implicit_value("python3"));
 
-    parser->add_numeric_argument(
-        NumericArgumentSpec<int>("vm-heap")
+    parser->add_numeric_argument<int>(
+        NumericArgumentSpec("vm-heap")
             .set_description("Interpreter VM max heap size")
             .set_help_group("Runtime")
             .set_default_value("1000")
