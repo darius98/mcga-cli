@@ -1,0 +1,25 @@
+Language: Cpp
+Standard: Cpp11
+ColumnLimit: 80
+IndentWidth: 2
+
+AlwaysBreakTemplateDeclarations: Yes
+
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeRangeBasedForLoopColon: false
+SpaceBeforeInheritanceColon: false
+SpaceAfterTemplateKeyword: false
+SpaceAfterCStyleCast: true
+
+PointerAlignment: Left
+NamespaceIndentation: None
+FixNamespaceComments: true
+IndentWrappedFunctionNames: true
+
+AllowShortBlocksOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+
+ConstructorInitializerAllOnOneLineOrOnePerLine: true

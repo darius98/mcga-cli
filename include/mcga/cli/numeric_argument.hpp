@@ -1,195 +1,125 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <type_traits>
 
 #include "command_line_spec.hpp"
 #include "disallow_copy_and_move.hpp"
+#include "generator.hpp"
 
 namespace mcga::cli {
 
-template<class T,
-         class = typename std::enable_if<std::is_arithmetic<T>::value>::type>
 struct NumericArgumentSpec {
-    std::string name;
-    std::string description = "";
-    std::string helpGroup = "";
-    std::string shortName = "";
-    std::optional<internal::Generator> defaultValue;
-    std::optional<internal::Generator> implicitValue;
+  std::string name;
+  std::string description = "";
+  std::string help_group = "";
+  std::string short_name = "";
+  std::optional<internal::Generator> default_value;
+  std::optional<internal::Generator> implicit_value;
 
-    explicit NumericArgumentSpec(std::string _name): name(std::move(_name)) {
-    }
+  explicit NumericArgumentSpec(std::string name_);
+  NumericArgumentSpec& set_description(std::string description_);
+  NumericArgumentSpec& set_help_group(std::string help_group_);
+  NumericArgumentSpec& set_short_name(std::string short_name_);
 
-    NumericArgumentSpec& setDescription(std::string _description) {
-        description = std::move(_description);
-        return *this;
-    }
+  NumericArgumentSpec& set_default_value(const std::string& default_value_);
+  NumericArgumentSpec& set_default_value_generator(
+      const std::function<std::string()>& default_value_gen,
+      const std::string& default_value_desc = "<no description>");
 
-    NumericArgumentSpec& setHelpGroup(std::string _helpGroup) {
-        helpGroup = std::move(_helpGroup);
-        return *this;
-    }
-
-    NumericArgumentSpec& setShortName(std::string _shortName) {
-        shortName = std::move(_shortName);
-        return *this;
-    }
-
-    NumericArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
-        defaultValue.emplace([_defaultValue]() { return _defaultValue; },
-                             _defaultValue);
-        return *this;
-    }
-
-    NumericArgumentSpec& setDefaultValueGenerator(
-      const std::function<std::string()>& defaultValueGenerator,
-      const std::string& defaultValueDescription = "<NO DESCRIPTION>") {
-        defaultValue.emplace(defaultValueGenerator, defaultValueDescription);
-        return *this;
-    }
-
-    NumericArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
-        implicitValue.emplace([_implicitValue]() { return _implicitValue; },
-                              _implicitValue);
-        return *this;
-    }
-
-    NumericArgumentSpec& setImplicitValueGenerator(
-      const std::function<std::string()>& implicitValueGenerator,
-      const std::string& implicitValueDescription = "<NO DESCRIPTION>") {
-        implicitValue.emplace(implicitValueGenerator, implicitValueDescription);
-        return *this;
-    }
+  NumericArgumentSpec& set_implicit_value(const std::string& implicit_value_);
+  NumericArgumentSpec& set_implicit_value_generator(
+      const std::function<std::string()>& implicit_value_gen,
+      const std::string& implicit_value_desc = "<no description>");
 };
 
 namespace internal {
-
-template<class T,
-         class = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-class NumericArgument : public CommandLineSpec {
-  public:
-    ~NumericArgument() = default;
-
-    T getValue() const {
-        return value;
-    }
-
-  private:
-    class MakeSharedEnabler;
-
-    explicit NumericArgument(const NumericArgumentSpec<T>& spec)
-            : CommandLineSpec(spec.defaultValue.has_value(),
-                              spec.implicitValue.has_value()),
-              spec(spec) {
-    }
-
-    MCGA_DISALLOW_COPY_AND_MOVE(NumericArgument);
-
-    const std::string& getName() const override {
-        return spec.name;
-    }
-
-    void setDefault() override {
-        setValue(spec.defaultValue.value().generate());
-    }
-
-    void setImplicit() override {
-        setValue(spec.implicitValue.value().generate());
-    }
-
-    void setValue(const std::string& _value) override;
-
-    NumericArgumentSpec<T> spec;
-    T value;
-
-    friend class mcga::cli::Parser;
-};
-
-template<class T, class S>
-class NumericArgument<T, S>::MakeSharedEnabler : public NumericArgument<T, S> {
-  public:
-    explicit MakeSharedEnabler(const NumericArgumentSpec<T>& spec)
-            : NumericArgument<T, S>(spec) {
-    }
-};
-
-}  // namespace internal
 
 template<class T>
-using NumericArgument = std::shared_ptr<internal::NumericArgument<T>>;
-
-namespace internal {
+T from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<char>::setValue(const std::string& _value) {
-    value = static_cast<char>(std::stoi(_value));
-}
+char from_string(const std::string& value);
 
 template<>
-inline void
-  NumericArgument<unsigned char>::setValue(const std::string& _value) {
-    value = static_cast<unsigned char>(std::stoul(_value));
-}
+unsigned char from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<short int>::setValue(const std::string& _value) {
-    value = static_cast<short int>(std::stoi(_value));
-}
+short int from_string(const std::string& value);
 
 template<>
-inline void
-  NumericArgument<unsigned short int>::setValue(const std::string& _value) {
-    value = static_cast<unsigned short int>(std::stoul(_value));
-}
+unsigned short int from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<int>::setValue(const std::string& _value) {
-    value = std::stoi(_value);
-}
+int from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<unsigned int>::setValue(const std::string& _value) {
-    value = static_cast<unsigned int>(std::stoul(_value));
-}
+unsigned int from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<long>::setValue(const std::string& _value) {
-    value = std::stol(_value);
-}
+long from_string(const std::string& value);
 
 template<>
-inline void
-  NumericArgument<unsigned long>::setValue(const std::string& _value) {
-    value = std::stoul(_value);
-}
+unsigned long from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<long long>::setValue(const std::string& _value) {
-    value = std::stoll(_value);
-}
+long long from_string(const std::string& value);
 
 template<>
-inline void
-  NumericArgument<unsigned long long>::setValue(const std::string& _value) {
-    value = std::stoull(_value);
-}
+unsigned long long from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<float>::setValue(const std::string& _value) {
-    value = std::stof(_value);
-}
+float from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<double>::setValue(const std::string& _value) {
-    value = std::stod(_value);
-}
+double from_string(const std::string& value);
 
 template<>
-inline void NumericArgument<long double>::setValue(const std::string& _value) {
-    value = std::stold(_value);
-}
+long double from_string(const std::string& value);
 
-}  // namespace internal
+template<class T>
+class NumericArgumentImpl: public CommandLineSpec {
+public:
+  explicit NumericArgumentImpl(const NumericArgumentSpec& spec)
+      : CommandLineSpec(spec.default_value.has_value(),
+                        spec.implicit_value.has_value()),
+        spec(spec) {}
 
-}  // namespace mcga::cli
+  ~NumericArgumentImpl() override = default;
+
+  [[nodiscard]] T get_value() const {
+    return value;
+  }
+
+private:
+  MCGA_DISALLOW_COPY_AND_MOVE(NumericArgumentImpl);
+
+  [[nodiscard]] const std::string& get_name() const override {
+    return spec.name;
+  }
+
+  void set_default() override {
+    set_value(spec.default_value.value().generate());
+  }
+
+  void set_implicit() override {
+    set_value(spec.implicit_value.value().generate());
+  }
+
+  void set_value(const std::string& value_) override {
+    value = from_string<T>(value_);
+  }
+
+  NumericArgumentSpec spec;
+  T value;
+
+  friend class mcga::cli::Parser;
+};
+
+} // namespace internal
+
+template<class T>
+using NumericArgument = std::shared_ptr<internal::NumericArgumentImpl<T>>;
+
+} // namespace mcga::cli

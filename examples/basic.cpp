@@ -9,14 +9,14 @@ using std::boolalpha;
 using std::cout;
 
 int main(int argc, char** argv) {
-    Parser parser("Basic example.");
-    Argument arg = parser.addArgument(ArgumentSpec("arg")
-                                        .setDefaultValue("default")
-                                        .setImplicitValue("implicit")
-                                        .setDescription("A basic argument."));
-    parser.parse(argc, argv);
+  Parser parser("Basic example.");
+  Argument arg = parser.add_argument(ArgumentSpec("arg")
+                                         .set_default_value("default")
+                                         .set_implicit_value("implicit")
+                                         .set_description("A basic argument."));
+  parser.parse(argc, argv);
 
-    cout << "Argument appeared = " << boolalpha << arg->appeared() << "\n";
-    cout << "Argument value = " << arg->getValue() << "\n";
-    return 0;
+  cout << "Argument appeared = " << boolalpha << arg->appeared() << "\n";
+  cout << "Argument value = " << arg->get_value() << "\n";
+  return 0;
 }

@@ -18,57 +18,59 @@ using std::invalid_argument;
 using std::string;
 using std::vector;
 
-
 TEST_CASE(McgaCliFlag, "Flag") {
-    Parser* parser = nullptr;
-    Flag a;
-    Flag b;
+  Parser* parser = nullptr;
+  Flag a;
+  Flag b;
 
-    setUp([&] {
-        parser = new Parser("");
-        a = parser->addFlag(FlagSpec("flag_a").setShortName("a"));
-        b = parser->addFlag(FlagSpec("flag_b").setShortName("b"));
-    });
+  setUp([&] {
+    parser = new Parser("");
+    a = parser->add_flag(FlagSpec("flag_a").set_short_name("a"));
+    b = parser->add_flag(FlagSpec("flag_b").set_short_name("b"));
+  });
 
-    tearDown([&] {
-        delete parser;
-        parser = nullptr;
-    });
+  tearDown([&] {
+    delete parser;
+    parser = nullptr;
+  });
 
-    test("Default flag value is false", [&] {
-        expect(a->getValue(), isFalse);
-        expect(b->getValue(), isFalse);
-    });
+  test("Default flag value is false", [&] {
+    expect(a->get_value(), isFalse);
+    expect(b->get_value(), isFalse);
+  });
 
-    test("Implicit flag value is true", [&] {
-        parser->parse({"--flag_a"});
-        expect(a->getValue(), isTrue);
-        expect(b->getValue(), isFalse);
+  test("Implicit flag value is true", [&] {
+    parser->parse({"--flag_a"});
+    expect(a->get_value(), isTrue);
+    expect(b->get_value(), isFalse);
 
-        parser->parse({"--a"});
-        expect(a->getValue(), isTrue);
-        expect(b->getValue(), isFalse);
+    parser->parse({"--a"});
+    expect(a->get_value(), isTrue);
+    expect(b->get_value(), isFalse);
 
-        parser->parse({"-ab", "-a"});
-        expect(a->getValue(), isTrue);
-        expect(b->getValue(), isTrue);
-    });
+    parser->parse({"-ab", "-a"});
+    expect(a->get_value(), isTrue);
+    expect(b->get_value(), isTrue);
+  });
 
-    test("Passing a flag value 'enabled' enables it", [&] {
-        parser->parse({"--flag_a=enabled"});
-        expect(a->getValue(), isTrue);
-    });
+  test("Passing a flag value 'enabled' enables it", [&] {
+    parser->parse({"--flag_a=enabled"});
+    expect(a->get_value(), isTrue);
+  });
 
-    test("Passing a flag random values throws", [&] {
-        expect([&] {
-            parser->parse({"--flag_a=whatever"});
-        }, throwsA<invalid_argument>());
-    });
+  test("Passing a flag random values throws", [&] {
+    expect(
+        [&] {
+          parser->parse({"--flag_a=whatever"});
+        },
+        throwsA<invalid_argument>());
+  });
 
-    test("Single dash flag does not associate with the following "
-         "positional argument", [&] {
-        auto positional = parser->parse({"-a", "enabled"});
-        expect(positional, isEqualTo(vector<string>{"enabled"}));
-        expect(a->getValue(), isTrue);
-    });
+  test("Single dash flag does not associate with the following positional "
+       "argument",
+       [&] {
+         auto positional = parser->parse({"-a", "enabled"});
+         expect(positional, isEqualTo(vector<string>{"enabled"}));
+         expect(a->get_value(), isTrue);
+       });
 }

@@ -13,153 +13,147 @@ namespace mcga::cli {
 
 template<class T>
 struct ChoiceArgumentSpec {
-    std::string name;
-    std::string description = "";
-    std::string helpGroup = "";
-    std::string shortName = "";
-    std::map<std::string, T> options;
-    std::optional<internal::Generator> defaultValue;
-    std::optional<internal::Generator> implicitValue;
+  std::string name;
+  std::string description = "";
+  std::string help_group = "";
+  std::string short_name = "";
+  std::map<std::string, T> options;
+  std::optional<internal::Generator> default_value;
+  std::optional<internal::Generator> implicit_value;
 
-    explicit ChoiceArgumentSpec(std::string _name): name(std::move(_name)) {
-    }
+  explicit ChoiceArgumentSpec(std::string name_): name(std::move(name_)) {}
 
-    ChoiceArgumentSpec& setShortName(const std::string& _shortName) {
-        shortName = _shortName;
-        return *this;
-    }
+  ChoiceArgumentSpec& set_short_name(const std::string& short_name_) {
+    short_name = short_name_;
+    return *this;
+  }
 
-    ChoiceArgumentSpec& setDescription(const std::string& _description) {
-        description = _description;
-        return *this;
-    }
+  ChoiceArgumentSpec& set_description(const std::string& description_) {
+    description = description_;
+    return *this;
+  }
 
-    ChoiceArgumentSpec& setHelpGroup(const std::string& _helpGroup) {
-        helpGroup = _helpGroup;
-        return *this;
-    }
+  ChoiceArgumentSpec& set_help_group(const std::string& help_group_) {
+    help_group = help_group_;
+    return *this;
+  }
 
-    ChoiceArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
-        defaultValue.emplace([_defaultValue]() { return _defaultValue; },
-                             _defaultValue);
-        return *this;
-    }
+  ChoiceArgumentSpec& set_default_value(const std::string& default_value_) {
+    default_value.emplace(
+        [default_value_]() {
+          return default_value_;
+        },
+        default_value_);
+    return *this;
+  }
 
-    ChoiceArgumentSpec& setDefaultValueGenerator(
-      const std::function<std::string()>& defaultValueGenerator,
-      const std::string& defaultValueDescription = "<NO DESCRIPTION>") {
-        defaultValue.emplace(defaultValueGenerator, defaultValueDescription);
-        return *this;
-    }
+  ChoiceArgumentSpec& set_default_value_generator(
+      const std::function<std::string()>& default_value_gen,
+      const std::string& default_value_desc = "<no description>") {
+    default_value.emplace(default_value_gen, default_value_desc);
+    return *this;
+  }
 
-    ChoiceArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
-        implicitValue.emplace([_implicitValue]() { return _implicitValue; },
-                              _implicitValue);
-        return *this;
-    }
+  ChoiceArgumentSpec& set_implicit_value(const std::string& implicit_value_) {
+    implicit_value.emplace(
+        [implicit_value_]() {
+          return implicit_value_;
+        },
+        implicit_value_);
+    return *this;
+  }
 
-    ChoiceArgumentSpec& setImplicitValueGenerator(
-      const std::function<std::string()>& implicitValueGenerator,
-      const std::string& implicitValueDescription = "<NO DESCRIPTION>") {
-        implicitValue.emplace(implicitValueGenerator, implicitValueDescription);
-        return *this;
-    }
+  ChoiceArgumentSpec& set_implicit_value_generator(
+      const std::function<std::string()>& implicit_value_gen,
+      const std::string& implicit_value_desc = "<no description>") {
+    implicit_value.emplace(implicit_value_gen, implicit_value_desc);
+    return *this;
+  }
 
-    ChoiceArgumentSpec&
-      setOptions(const std::vector<std::pair<std::string, T>>& _options) {
-        options.clear();
-        return addOptions(_options);
-    }
+  ChoiceArgumentSpec&
+      set_options(const std::vector<std::pair<std::string, T>>& options_) {
+    options.clear();
+    return add_options(options_);
+  }
 
-    ChoiceArgumentSpec&
-      addOptions(const std::vector<std::pair<std::string, T>>& _options) {
-        for (const std::pair<std::string, T>& option: _options) {
-            options[option.first] = option.second;
-        }
-        return *this;
+  ChoiceArgumentSpec&
+      add_options(const std::vector<std::pair<std::string, T>>& extra_options) {
+    for (const std::pair<std::string, T>& option: extra_options) {
+      options[option.first] = option.second;
     }
+    return *this;
+  }
 
-    ChoiceArgumentSpec& addOption(const std::string& key, const T& value) {
-        options[key] = value;
-        return *this;
-    }
+  ChoiceArgumentSpec& add_option(const std::string& key, const T& value) {
+    options[key] = value;
+    return *this;
+  }
 };
 
 namespace internal {
 
 template<class T>
-class ChoiceArgument : public CommandLineSpec {
-  public:
-    ~ChoiceArgument() = default;
+class ChoiceArgumentImpl: public CommandLineSpec {
+public:
+  explicit ChoiceArgumentImpl(const ChoiceArgumentSpec<T>& spec)
+      : CommandLineSpec(spec.default_value.has_value(),
+                        spec.implicit_value.has_value()),
+        spec(spec) {}
 
-    const ChoiceArgumentSpec<T>& getSpec() const {
-        return spec;
+  ~ChoiceArgumentImpl() override = default;
+
+  const ChoiceArgumentSpec<T>& get_spec() const {
+    return spec;
+  }
+
+  T get_value() const {
+    return value;
+  }
+
+private:
+  MCGA_DISALLOW_COPY_AND_MOVE(ChoiceArgumentImpl);
+
+  [[nodiscard]] const std::string& get_name() const override {
+    return spec.name;
+  }
+
+  void set_default() override {
+    set_value(spec.default_value.value().generate());
+  }
+
+  void set_implicit() override {
+    set_value(spec.implicit_value.value().generate());
+  }
+
+  void set_value(const std::string& value_) override {
+    auto it = spec.options.find(value_);
+    if (it != spec.options.end()) {
+      value = it->second;
+      return;
     }
-
-    T getValue() const {
-        return value;
+    std::string rendered_options;
+    bool first = true;
+    for (const std::pair<std::string, T>& option: spec.options) {
+      if (!first) {
+        rendered_options += ",";
+      }
+      first = false;
+      rendered_options += "'" + option.first + "'";
     }
+    throw std::invalid_argument(
+        "Trying to set option `" + value_ + "` to argument " + spec.name +
+        ", which has options [" + rendered_options + "]");
+  }
 
-  protected:
-    explicit ChoiceArgument(const ChoiceArgumentSpec<T>& spec)
-            : CommandLineSpec(spec.defaultValue.has_value(),
-                              spec.implicitValue.has_value()),
-              spec(spec) {
-    }
+  ChoiceArgumentSpec<T> spec;
+  T value;
 
-  private:
-    MCGA_DISALLOW_COPY_AND_MOVE(ChoiceArgument);
-
-    class MakeSharedEnabler;
-
-    const std::string& getName() const override {
-        return spec.name;
-    }
-
-    void setDefault() override {
-        setValue(spec.defaultValue.value().generate());
-    }
-
-    void setImplicit() override {
-        setValue(spec.implicitValue.value().generate());
-    }
-
-    void setValue(const std::string& _value) override {
-        auto optionsIterator = spec.options.find(_value);
-        if (optionsIterator == spec.options.end()) {
-            std::string renderedOptions;
-            bool first = true;
-            for (const std::pair<std::string, T>& option: spec.options) {
-                if (!first) {
-                    renderedOptions += ",";
-                }
-                first = false;
-                renderedOptions += "'" + option.first + "'";
-            }
-            throw std::invalid_argument(
-              "Trying to set option `" + _value + "` to argument " + spec.name
-              + ", which has options [" + renderedOptions + "]");
-        }
-        value = optionsIterator->second;
-    }
-
-    ChoiceArgumentSpec<T> spec;
-    T value;
-
-    friend class mcga::cli::Parser;
+  friend class mcga::cli::Parser;
 };
 
-template<class T>
-class ChoiceArgument<T>::MakeSharedEnabler : public ChoiceArgument<T> {
-  public:
-    explicit MakeSharedEnabler(const ChoiceArgumentSpec<T>& spec)
-            : ChoiceArgument<T>(spec) {
-    }
-};
-
-}  // namespace internal
+} // namespace internal
 
 template<class T>
-using ChoiceArgument = std::shared_ptr<internal::ChoiceArgument<T>>;
+using ChoiceArgument = std::shared_ptr<internal::ChoiceArgumentImpl<T>>;
 
-}  // namespace mcga::cli
+} // namespace mcga::cli

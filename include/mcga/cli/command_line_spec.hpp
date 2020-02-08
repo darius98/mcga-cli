@@ -8,69 +8,43 @@ namespace mcga::cli {
 
 class Parser;
 
-}  // namespace mcga::cli
+} // namespace mcga::cli
 
 namespace mcga::cli::internal {
 
 class CommandLineSpec {
-  public:
-    bool appeared() const {
-        return appearedInArgs;
-    }
+public:
+  [[nodiscard]] bool appeared() const;
 
-  protected:
-    CommandLineSpec(bool _hasDefaultValue, bool _hasImplicitValue)
-            : hasDefaultValue(_hasDefaultValue),
-              hasImplicitValue(_hasImplicitValue) {
-    }
+protected:
+  CommandLineSpec(bool has_default_value_, bool has_implicit_value_);
 
-    virtual ~CommandLineSpec() = default;
+  virtual ~CommandLineSpec() = default;
 
-  private:
-    MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
+private:
+  MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
 
-    virtual const std::string& getName() const = 0;
+  [[nodiscard]] virtual const std::string& get_name() const = 0;
 
-    virtual bool takesNextPositionalArg() const {
-        return true;
-    }
+  [[nodiscard]] virtual bool consumes_next_positional_arg() const;
 
-    virtual void setDefault() = 0;
+  virtual void set_default() = 0;
 
-    virtual void setImplicit() = 0;
+  virtual void set_implicit() = 0;
 
-    virtual void setValue(const std::string& value) = 0;
+  virtual void set_value(const std::string& value) = 0;
 
-    void setDefaultGuarded() {
-        if (!hasDefaultValue) {
-            throw std::invalid_argument(
-              "Trying to set default value for argument " + getName()
-              + ", which has no default value.");
-        }
-        setDefault();
-        appearedInArgs = false;
-    }
+  void set_default_guarded();
 
-    void setImplicitGuarded() {
-        if (!hasImplicitValue) {
-            throw std::invalid_argument(
-              "Trying to set implicit value for argument " + getName()
-              + ", which has no implicit value.");
-        }
-        setImplicit();
-        appearedInArgs = true;
-    }
+  void set_implicit_guarded();
 
-    void setValueGuarded(const std::string& value) {
-        setValue(value);
-        appearedInArgs = true;
-    }
+  void set_value_guarded(const std::string& value);
 
-    bool appearedInArgs = false;
-    bool hasDefaultValue;
-    bool hasImplicitValue;
+  bool appeared_in_args = false;
+  bool has_default_value;
+  bool has_implicit_value;
 
-    friend class mcga::cli::Parser;
+  friend class mcga::cli::Parser;
 };
 
-}  // namespace mcga::cli::internal
+} // namespace mcga::cli::internal

@@ -8,77 +8,36 @@
 namespace mcga::cli {
 
 struct FlagSpec {
-    std::string name;
-    std::string description = "";
-    std::string helpGroup = "";
-    std::string shortName = "";
+  std::string name;
+  std::string description = "";
+  std::string help_group = "";
+  std::string short_name = "";
 
-    explicit FlagSpec(std::string _name): name(std::move(_name)) {
-    }
+  explicit FlagSpec(std::string name_);
 
-    FlagSpec& setDescription(std::string _description) {
-        description = std::move(_description);
-        return *this;
-    }
-
-    FlagSpec& setHelpGroup(std::string _helpGroup) {
-        helpGroup = std::move(_helpGroup);
-        return *this;
-    }
-
-    FlagSpec& setShortName(std::string _shortName) {
-        shortName = std::move(_shortName);
-        return *this;
-    }
+  FlagSpec& set_description(std::string description_);
+  FlagSpec& set_help_group(std::string help_group_);
+  FlagSpec& set_short_name(std::string short_name_);
 };
 
 namespace internal {
 
-class Flag : public internal::ChoiceArgument<bool> {
-  public:
-    ~Flag() = default;
+class FlagImpl: public internal::ChoiceArgumentImpl<bool> {
+public:
+  explicit FlagImpl(const FlagSpec& spec);
 
-  private:
-    class FlagMakeSharedEnabler;
+  ~FlagImpl() override = default;
 
-    explicit Flag(const FlagSpec& spec)
-            : internal::ChoiceArgument<bool>(
-              ChoiceArgumentSpec<bool>(spec.name)
-                .setShortName(spec.shortName)
-                .setDescription(spec.description)
-                .setHelpGroup(spec.helpGroup)
-                .setOptions({{"1", true},
-                             {"true", true},
-                             {"TRUE", true},
-                             {"enabled", true},
-                             {"ENABLED", true},
+private:
+  MCGA_DISALLOW_COPY_AND_MOVE(FlagImpl);
 
-                             {"0", false},
-                             {"false", false},
-                             {"FALSE", false},
-                             {"disabled", false},
-                             {"DISABLED", false}})
-                .setDefaultValue("false")
-                .setImplicitValue("true")) {
-    }
+  [[nodiscard]] bool consumes_next_positional_arg() const override;
 
-    MCGA_DISALLOW_COPY_AND_MOVE(Flag);
-
-    bool takesNextPositionalArg() const override {
-        return false;
-    }
-
-    friend class mcga::cli::Parser;
+  friend class mcga::cli::Parser;
 };
 
-class Flag::FlagMakeSharedEnabler : public Flag {
-  public:
-    explicit FlagMakeSharedEnabler(const FlagSpec& spec): Flag(spec) {
-    }
-};
+} // namespace internal
 
-}  // namespace internal
+using Flag = std::shared_ptr<internal::FlagImpl>;
 
-using Flag = std::shared_ptr<internal::Flag>;
-
-}  // namespace mcga::cli
+} // namespace mcga::cli

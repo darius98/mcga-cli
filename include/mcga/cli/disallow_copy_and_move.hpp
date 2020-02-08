@@ -1,7 +1,9 @@
 #pragma once
 
-#define MCGA_DISALLOW_COPY_AND_MOVE(Class)                                     \
-    Class(const Class&) = delete;                                              \
-    Class(Class&&) = delete;                                                   \
-    Class& operator=(const Class&) = delete;                                   \
-    Class& operator=(Class&&) = delete
+#ifndef MCGA_DISALLOW_COPY_AND_MOVE
+#define MCGA_DISALLOW_COPY_AND_MOVE(ClassName)                                 \
+  ClassName(const ClassName&) = delete;                                        \
+  ClassName(ClassName&&) = delete;                                             \
+  ClassName& operator=(const ClassName&) = delete;                             \
+  ClassName& operator=(ClassName&&) = delete
+#endif

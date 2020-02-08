@@ -12,113 +12,61 @@ namespace mcga::cli {
 class Parser;
 
 struct ArgumentSpec {
-    std::string name;
-    std::string description = "";
-    std::string helpGroup = "";
-    std::string shortName = "";
-    std::optional<internal::Generator> defaultValue;
-    std::optional<internal::Generator> implicitValue;
+  std::string name;
+  std::string description = "";
+  std::string help_group = "";
+  std::string short_name = "";
+  std::optional<internal::Generator> default_value;
+  std::optional<internal::Generator> implicit_value;
 
-    explicit ArgumentSpec(std::string name): name(std::move(name)) {
-    }
+  explicit ArgumentSpec(std::string name);
 
-    ArgumentSpec& setDescription(std::string _description) {
-        description = std::move(_description);
-        return *this;
-    }
+  ArgumentSpec& set_description(std::string description_);
+  ArgumentSpec& set_help_group(std::string help_group_);
+  ArgumentSpec& set_short_name(std::string short_name_);
 
-    ArgumentSpec& setHelpGroup(std::string _helpGroup) {
-        helpGroup = std::move(_helpGroup);
-        return *this;
-    }
+  ArgumentSpec& set_default_value(const std::string& default_value_);
+  ArgumentSpec& set_default_value_generator(
+      const std::function<std::string()>& default_value_gen,
+      const std::string& default_value_desc = "<no description>");
 
-    ArgumentSpec& setShortName(std::string _shortName) {
-        shortName = std::move(_shortName);
-        return *this;
-    }
-
-    ArgumentSpec& setDefaultValue(const std::string& _defaultValue) {
-        defaultValue.emplace([_defaultValue]() { return _defaultValue; },
-                             _defaultValue);
-        return *this;
-    }
-
-    ArgumentSpec& setDefaultValueGenerator(
-      const std::function<std::string()>& defaultValueGenerator,
-      const std::string& defaultValueDescription = "<NO DESCRIPTION>") {
-        defaultValue.emplace(defaultValueGenerator, defaultValueDescription);
-        return *this;
-    }
-
-    ArgumentSpec& setImplicitValue(const std::string& _implicitValue) {
-        implicitValue.emplace([_implicitValue]() { return _implicitValue; },
-                              _implicitValue);
-        return *this;
-    }
-
-    ArgumentSpec& setImplicitValueGenerator(
-      const std::function<std::string()>& implicitValueGenerator,
-      const std::string& implicitValueDescription = "<NO DESCRIPTION>") {
-        implicitValue.emplace(implicitValueGenerator, implicitValueDescription);
-        return *this;
-    }
+  ArgumentSpec& set_implicit_value(const std::string& implicit_value_);
+  ArgumentSpec& set_implicit_value_generator(
+      const std::function<std::string()>& implicit_value_gen,
+      const std::string& implicit_value_desc = "<no description>");
 };
 
 namespace internal {
 
-class Argument : public CommandLineSpec {
-  public:
-    ~Argument() override = default;
+class ArgumentImpl: public CommandLineSpec {
+public:
+  explicit ArgumentImpl(const ArgumentSpec& spec);
 
-    std::string getValue() const {
-        return value;
-    }
+  ~ArgumentImpl() override = default;
 
-    const ArgumentSpec& getSpec() const {
-        return spec;
-    }
+  [[nodiscard]] std::string get_value() const;
 
-  private:
-    class MakeSharedEnabler;
+  [[nodiscard]] const ArgumentSpec& get_spec() const;
 
-    explicit Argument(const ArgumentSpec& spec)
-            : CommandLineSpec(spec.defaultValue.has_value(),
-                              spec.implicitValue.has_value()),
-              spec(spec) {
-    }
+private:
+  MCGA_DISALLOW_COPY_AND_MOVE(ArgumentImpl);
 
-    MCGA_DISALLOW_COPY_AND_MOVE(Argument);
+  [[nodiscard]] const std::string& get_name() const override;
 
-    const std::string& getName() const override {
-        return spec.name;
-    }
+  void set_default() override;
 
-    void setDefault() override {
-        value = spec.defaultValue.value().generate();
-    }
+  void set_implicit() override;
 
-    void setImplicit() override {
-        value = spec.implicitValue.value().generate();
-    }
+  void set_value(const std::string& value_) override;
 
-    void setValue(const std::string& _value) override {
-        value = _value;
-    }
+  ArgumentSpec spec;
+  std::string value;
 
-    ArgumentSpec spec;
-    std::string value;
-
-    friend class mcga::cli::Parser;
+  friend class mcga::cli::Parser;
 };
 
-class Argument::MakeSharedEnabler : public Argument {
-  public:
-    explicit MakeSharedEnabler(const ArgumentSpec& spec): Argument(spec) {
-    }
-};
+} // namespace internal
 
-}  // namespace internal
+using Argument = std::shared_ptr<internal::ArgumentImpl>;
 
-using Argument = std::shared_ptr<internal::Argument>;
-
-}  // namespace mcga::cli
+} // namespace mcga::cli
