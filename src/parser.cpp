@@ -28,6 +28,27 @@ Argument Parser::add_argument(const ArgumentSpec& spec) {
   return argument;
 }
 
+ListArgument Parser::add_list_argument(const ListArgumentSpec& spec) {
+  check_name_availability(spec.name, spec.short_name);
+  ListArgument argument = std::make_shared<internal::ListArgumentImpl>(spec);
+  add_spec(argument, spec.name, spec.short_name);
+  std::string extra;
+  if (spec.default_value.has_value() && spec.implicit_value.has_value()) {
+    extra = "\t\tDefault: '" + spec.default_value.value().get_description() +
+            "', Implicit: '" + spec.implicit_value.value().get_description() +
+            "'";
+  } else if (spec.default_value.has_value()) {
+    extra =
+        "\t\tDefault: '" + spec.default_value.value().get_description() + "'";
+  } else if (spec.implicit_value.has_value()) {
+    extra =
+        "\t\tImplicit: '" + spec.implicit_value.value().get_description() + "'";
+  }
+  add_help(spec.help_group, spec.name, spec.short_name, spec.description,
+           extra);
+  return argument;
+}
+
 Flag Parser::add_flag(const FlagSpec& spec) {
   check_name_availability(spec.name, spec.short_name);
   Flag flag = std::make_shared<internal::FlagImpl>(spec);
@@ -59,7 +80,7 @@ void Parser::add_help_flag() {
 
 auto Parser::parse(const ArgList& args) -> ArgList {
   for (const CommandLineSpecPtr& spec: specs) {
-    spec->appeared_in_args = false;
+    spec->reset();
   }
 
   ArgList positional_args;

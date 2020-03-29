@@ -10,6 +10,7 @@ add_library(mcga_cli STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/src/command_line_spec.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/flag.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/generator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/list_argument.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/numeric_argument.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cpp)
 target_include_directories(mcga_cli PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -21,6 +22,7 @@ if (MCGA_cli_tests)
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/choice_argument_test.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/flag_test.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/help_test.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/tests/list_argument_test.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/numeric_argument_test.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/parser_test.cpp
             )

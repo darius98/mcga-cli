@@ -9,6 +9,7 @@
 #include "choice_argument.hpp"
 #include "command_line_spec.hpp"
 #include "flag.hpp"
+#include "list_argument.hpp"
 #include "numeric_argument.hpp"
 
 namespace mcga::cli {
@@ -24,6 +25,8 @@ public:
   ~Parser() = default;
 
   Argument add_argument(const ArgumentSpec& spec);
+
+  ListArgument add_list_argument(const ListArgumentSpec& spec);
 
   template<class T>
   NumericArgument<T> add_numeric_argument(const NumericArgumentSpec& spec) {

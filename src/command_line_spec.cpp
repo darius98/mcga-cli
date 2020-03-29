@@ -17,6 +17,10 @@ bool CommandLineSpec::consumes_next_positional_arg() const {
   return true;
 }
 
+void CommandLineSpec::reset() {
+  appeared_in_args = false;
+}
+
 void CommandLineSpec::set_default_guarded() {
   if (!has_default_value) {
     throw std::invalid_argument("Trying to set default value for argument " +

@@ -21,6 +21,8 @@ protected:
 
   virtual ~CommandLineSpec() = default;
 
+  virtual void reset();
+
 private:
   MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
 
