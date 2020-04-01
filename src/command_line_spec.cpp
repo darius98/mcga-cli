@@ -1,6 +1,6 @@
 #include <mcga/cli/command_line_spec.hpp>
 
-#include <stdexcept>
+#include <mcga/cli/exceptions.hpp>
 
 namespace mcga::cli::internal {
 
@@ -23,8 +23,9 @@ void CommandLineSpec::reset() {
 
 void CommandLineSpec::set_default_guarded() {
   if (!has_default_value) {
-    throw std::invalid_argument("Trying to set default value for argument " +
-                                get_name() + ", which has no default value.");
+    internal::throw_invalid_argument_exception(
+        "Trying to set default value for argument " + get_name() +
+        ", which has no default value.");
   }
   set_default();
   appeared_in_args = false;
@@ -32,8 +33,9 @@ void CommandLineSpec::set_default_guarded() {
 
 void CommandLineSpec::set_implicit_guarded() {
   if (!has_implicit_value) {
-    throw std::invalid_argument("Trying to set implicit value for argument " +
-                                get_name() + ", which has no implicit value.");
+    internal::throw_invalid_argument_exception(
+        "Trying to set implicit value for argument " + get_name() +
+        ", which has no implicit value.");
   }
   set_implicit();
   appeared_in_args = true;

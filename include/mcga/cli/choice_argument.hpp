@@ -1,12 +1,12 @@
 #pragma once
 
 #include <map>
-#include <stdexcept>
 #include <utility>
 #include <vector>
 
 #include "command_line_spec.hpp"
 #include "disallow_copy_and_move.hpp"
+#include "exceptions.hpp"
 #include "generator.hpp"
 
 namespace mcga::cli {
@@ -140,7 +140,7 @@ private:
       first = false;
       rendered_options += "'" + option.first + "'";
     }
-    throw std::invalid_argument(
+    internal::throw_invalid_argument_exception(
         "Trying to set option `" + value_ + "` to argument " + spec.name +
         ", which has options [" + rendered_options + "]");
   }

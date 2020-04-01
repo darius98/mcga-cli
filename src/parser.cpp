@@ -234,20 +234,20 @@ void Parser::apply_implicit(const std::string& cliString) {
 void Parser::check_name_availability(const std::string& name,
                                      const std::string& short_name) const {
   if (reserved_names.count(name) != 0) {
-    throw std::runtime_error(
+    internal::throw_logic_error(
         "Argument tried to register " + name +
         " as a command-line "
         "name, but a different argument already has it as a name.");
   }
   if (!short_name.empty() && reserved_names.count(short_name) != 0) {
-    throw std::runtime_error(
+    internal::throw_logic_error(
         "Argument tried to register " + short_name +
         " as a command-line"
         " short name, but a different argument already has it as a "
         "short name.");
   }
   if (short_name.size() > 1) {
-    throw std::runtime_error(
+    internal::throw_logic_error(
         "Argument short name should always have length 1.");
   }
 }
