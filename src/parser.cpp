@@ -13,15 +13,15 @@ Argument Parser::add_argument(const ArgumentSpec& spec) {
   add_spec(argument, spec.name, spec.short_name);
   std::string extra;
   if (spec.default_value.has_value() && spec.implicit_value.has_value()) {
-    extra = "\t\tDefault: '" + spec.default_value.value().get_description() +
+    extra = "Default: '" + spec.default_value.value().get_description() +
             "', Implicit: '" + spec.implicit_value.value().get_description() +
             "'";
   } else if (spec.default_value.has_value()) {
     extra =
-        "\t\tDefault: '" + spec.default_value.value().get_description() + "'";
+        "Default: '" + spec.default_value.value().get_description() + "'";
   } else if (spec.implicit_value.has_value()) {
     extra =
-        "\t\tImplicit: '" + spec.implicit_value.value().get_description() + "'";
+        "Implicit: '" + spec.implicit_value.value().get_description() + "'";
   }
   add_help(spec.help_group, spec.name, spec.short_name, spec.description,
            extra);
@@ -34,15 +34,15 @@ ListArgument Parser::add_list_argument(const ListArgumentSpec& spec) {
   add_spec(argument, spec.name, spec.short_name);
   std::string extra;
   if (spec.default_value.has_value() && spec.implicit_value.has_value()) {
-    extra = "\t\tDefault: '" + spec.default_value.value().get_description() +
+    extra = "Default: '" + spec.default_value.value().get_description() +
             "', Implicit: '" + spec.implicit_value.value().get_description() +
             "'";
   } else if (spec.default_value.has_value()) {
     extra =
-        "\t\tDefault: '" + spec.default_value.value().get_description() + "'";
+        "Default: '" + spec.default_value.value().get_description() + "'";
   } else if (spec.implicit_value.has_value()) {
     extra =
-        "\t\tImplicit: '" + spec.implicit_value.value().get_description() + "'";
+        "Implicit: '" + spec.implicit_value.value().get_description() + "'";
   }
   add_help(spec.help_group, spec.name, spec.short_name, spec.description,
            extra);
@@ -54,7 +54,7 @@ Flag Parser::add_flag(const FlagSpec& spec) {
   Flag flag = std::make_shared<internal::FlagImpl>(spec);
   add_spec(flag, spec.name, spec.short_name);
   add_help(spec.help_group, spec.name, spec.short_name,
-           "(Flag)\t" + spec.description, "");
+           spec.description, "");
   return flag;
 }
 
@@ -260,14 +260,14 @@ void Parser::add_choice_argument_help(
     const std::string& rendered_options) {
   std::string extra;
   if (default_value.has_value() && implicit_value.has_value()) {
-    extra = "\t\tDefault: '" + default_value.value().get_description() +
+    extra = "Default: '" + default_value.value().get_description() +
             "', Implicit: '" + implicit_value.value().get_description() +
             "', allowed values: " + rendered_options;
   } else if (default_value.has_value()) {
-    extra = "\t\tDefault: '" + default_value.value().get_description() +
+    extra = "Default: '" + default_value.value().get_description() +
             "', allowed values: " + rendered_options;
   } else if (implicit_value.has_value()) {
-    extra = "\t\tImplicit: '" + implicit_value.value().get_description() +
+    extra = "Implicit: '" + implicit_value.value().get_description() +
             "', allowed values: " + rendered_options;
   }
   add_help(help_group, name, short_name, description, extra);
@@ -280,14 +280,14 @@ void Parser::add_numeric_argument_help(
     const std::string& short_name, const std::string& description) {
   std::string extra;
   if (default_value.has_value() && implicit_value.has_value()) {
-    extra = "\t\tDefault: '" + default_value.value().get_description() +
+    extra = "Default: '" + default_value.value().get_description() +
             "', Implicit: '" + implicit_value.value().get_description() + "'";
   } else if (default_value.has_value()) {
-    extra = "\t\tDefault: '" + default_value.value().get_description() + "'";
+    extra = "Default: '" + default_value.value().get_description() + "'";
   } else if (implicit_value.has_value()) {
-    extra = "\t\tImplicit: '" + implicit_value.value().get_description() + "'";
+    extra = "Implicit: '" + implicit_value.value().get_description() + "'";
   }
-  add_help(help_group, name, short_name, "(Number)\t" + description, extra);
+  add_help(help_group, name, short_name, description, extra);
 }
 
 void Parser::add_help(const std::string& help_group, const std::string& name,
@@ -298,9 +298,13 @@ void Parser::add_help(const std::string& help_group, const std::string& name,
   if (!short_name.empty()) {
     help_line += ",-" + short_name;
   }
-  help_line += "\t" + description;
+  if (!description.empty()) {
+    help_line += "  ";
+  }
+  help_line += description;
   if (!extra.empty()) {
-    help_line += "\n" + extra;
+    help_line += description.empty() ? "  " : "\n\t\t";
+    help_line += extra;
   }
 
   if (help_group.empty()) {
