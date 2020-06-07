@@ -16,8 +16,6 @@ add_library(mcga_cli STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cpp)
 target_include_directories(mcga_cli PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-install(DIRECTORY include DESTINATION .)
-
 if (MCGA_cli_tests)
     add_executable(mcga_cli_test
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/choice_argument_test.cpp
