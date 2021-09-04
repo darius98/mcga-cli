@@ -79,7 +79,7 @@ void Parser::add_help_flag() {
 }
 
 auto Parser::parse(const ArgList& args) -> ArgList {
-  for (const CommandLineSpecPtr& spec: specs) {
+  for (const CommandLineOptionPtr& spec: specs) {
     spec->reset();
   }
 
@@ -164,7 +164,7 @@ auto Parser::parse(const ArgList& args) -> ArgList {
     apply_implicit(last_short_name);
   }
 
-  for (const CommandLineSpecPtr& spec: specs) {
+  for (const CommandLineOptionPtr& spec: specs) {
     if (!spec->appeared()) {
       spec->set_default_guarded();
     }
@@ -198,7 +198,7 @@ std::string Parser::render_help() const {
   return help;
 }
 
-void Parser::add_spec(const CommandLineSpecPtr& spec, const std::string& name,
+void Parser::add_spec(const CommandLineOptionPtr& spec, const std::string& name,
                       const std::string& short_name) {
   specs.push_back(spec);
   reserved_names.insert(name);

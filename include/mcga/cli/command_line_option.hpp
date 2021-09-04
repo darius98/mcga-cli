@@ -12,19 +12,19 @@ class Parser;
 
 namespace mcga::cli::internal {
 
-class CommandLineSpec {
+class CommandLineOption {
 public:
   [[nodiscard]] bool appeared() const;
 
 protected:
-  CommandLineSpec(bool has_default_value_, bool has_implicit_value_);
+  CommandLineOption(bool has_default_value_, bool has_implicit_value_);
 
-  virtual ~CommandLineSpec() = default;
+  virtual ~CommandLineOption() = default;
 
   virtual void reset();
 
 private:
-  MCGA_DISALLOW_COPY_AND_MOVE(CommandLineSpec);
+  MCGA_DISALLOW_COPY_AND_MOVE(CommandLineOption);
 
   [[nodiscard]] virtual const std::string& get_name() const = 0;
 

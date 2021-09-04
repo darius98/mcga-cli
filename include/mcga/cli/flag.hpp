@@ -4,7 +4,7 @@
 #include <string>
 
 #include "choice_argument.hpp"
-#include "command_line_spec.hpp"
+#include "command_line_option.hpp"
 
 namespace mcga::cli {
 

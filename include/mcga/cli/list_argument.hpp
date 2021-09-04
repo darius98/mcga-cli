@@ -4,7 +4,7 @@
 #include <optional>
 #include <string>
 
-#include "command_line_spec.hpp"
+#include "command_line_option.hpp"
 #include "disallow_copy_and_move.hpp"
 #include "generator.hpp"
 
@@ -43,7 +43,7 @@ struct ListArgumentSpec {
 
 namespace internal {
 
-class ListArgumentImpl: public CommandLineSpec {
+class ListArgumentImpl: public CommandLineOption {
 public:
   explicit ListArgumentImpl(const ListArgumentSpec& spec);
 

@@ -79,7 +79,7 @@ ListArgumentSpec& ListArgumentSpec::set_implicit_value_generator(
 namespace internal {
 
 ListArgumentImpl::ListArgumentImpl(const ListArgumentSpec& spec)
-    : CommandLineSpec(spec.default_value.has_value(),
+    : CommandLineOption(spec.default_value.has_value(),
                       spec.implicit_value.has_value()),
       spec(spec) {}
 
@@ -96,7 +96,7 @@ const std::string& ListArgumentImpl::get_name() const {
 }
 
 void ListArgumentImpl::reset() {
-  CommandLineSpec::reset();
+  CommandLineOption::reset();
   applied_implicit = false;
   value.clear();
 }

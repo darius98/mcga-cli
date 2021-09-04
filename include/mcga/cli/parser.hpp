@@ -7,7 +7,7 @@
 
 #include "argument.hpp"
 #include "choice_argument.hpp"
-#include "command_line_spec.hpp"
+#include "command_line_option.hpp"
 #include "flag.hpp"
 #include "list_argument.hpp"
 #include "numeric_argument.hpp"
@@ -72,14 +72,14 @@ public:
   [[nodiscard]] std::string render_help() const;
 
 private:
-  using CommandLineSpecPtr = std::shared_ptr<internal::CommandLineSpec>;
+  using CommandLineOptionPtr = std::shared_ptr<internal::CommandLineOption>;
 
   struct HelpGroup {
     std::string group_name;
     std::string content;
   };
 
-  void add_spec(const CommandLineSpecPtr& spec, const std::string& name,
+  void add_spec(const CommandLineOptionPtr& spec, const std::string& name,
                 const std::string& short_name);
 
   void apply_value(const std::string& cliString, const std::string& value);
@@ -113,8 +113,8 @@ private:
     return std::to_string(value);
   }
 
-  std::vector<CommandLineSpecPtr> specs;
-  std::map<std::string, CommandLineSpecPtr> specs_by_cli_string;
+  std::vector<CommandLineOptionPtr> specs;
+  std::map<std::string, CommandLineOptionPtr> specs_by_cli_string;
 
   std::string help_prefix;
   std::vector<HelpGroup> help_sections;

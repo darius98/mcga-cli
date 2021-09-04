@@ -5,7 +5,7 @@
 #include <string>
 #include <type_traits>
 
-#include "command_line_spec.hpp"
+#include "command_line_option.hpp"
 #include "disallow_copy_and_move.hpp"
 #include "generator.hpp"
 
@@ -80,10 +80,10 @@ template<>
 long double from_string(const std::string& value);
 
 template<class T>
-class NumericArgumentImpl: public CommandLineSpec {
+class NumericArgumentImpl: public CommandLineOption {
 public:
   explicit NumericArgumentImpl(const NumericArgumentSpec& spec)
-      : CommandLineSpec(spec.default_value.has_value(),
+      : CommandLineOption(spec.default_value.has_value(),
                         spec.implicit_value.has_value()),
         spec(spec) {}
 

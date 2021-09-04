@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-#include "command_line_spec.hpp"
+#include "command_line_option.hpp"
 #include "disallow_copy_and_move.hpp"
 #include "exceptions.hpp"
 #include "generator.hpp"
@@ -94,10 +94,10 @@ struct ChoiceArgumentSpec {
 namespace internal {
 
 template<class T>
-class ChoiceArgumentImpl: public CommandLineSpec {
+class ChoiceArgumentImpl: public CommandLineOption {
 public:
   explicit ChoiceArgumentImpl(const ChoiceArgumentSpec<T>& spec)
-      : CommandLineSpec(spec.default_value.has_value(),
+      : CommandLineOption(spec.default_value.has_value(),
                         spec.implicit_value.has_value()),
         spec(spec) {}
 
