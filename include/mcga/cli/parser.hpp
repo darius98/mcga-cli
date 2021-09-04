@@ -26,6 +26,14 @@ public:
 
   Argument add_argument(const ArgumentSpec& spec);
 
+  // TODO(@Alexandra): Implement ListArgument & ListArgumentSpec as a template.
+  //  Hint 1: The signature of this method should look like this:
+//  template<class ElementSpec>
+//  ListArgument<ElementSpec> add_list_argument(const ListArgumentSpec<ElementSpec>& spec) {
+//  }
+  //  Hint 2: The current behaviour of ListArgument & ListArgumentSpec should
+  //  match the new behaviour of ListArgument<ArgumentSpec> & ListArgumentSpec<ArgumentSpec>.
+
   ListArgument add_list_argument(const ListArgumentSpec& spec);
 
   template<class T>
@@ -113,6 +121,7 @@ private:
     return std::to_string(value);
   }
 
+  // TODO(@Alexandra): Rename to options!
   std::vector<CommandLineOptionPtr> specs;
   std::map<std::string, CommandLineOptionPtr> specs_by_cli_string;
 
