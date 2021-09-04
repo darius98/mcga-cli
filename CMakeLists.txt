@@ -3,13 +3,12 @@ project(MCGA_cli)
 set(CMAKE_CXX_STANDARD 17)
 
 option(MCGA_cli_tests "Build MCGA CLI tests" OFF)
-option(MCGA_cli_examples "Build MCGA CLI examples" OFF)
 
 add_library(mcga_cli STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/src/argument.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/command_line_spec.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/exceptions.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/flag.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/exceptions.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/flag.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/list_argument.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/numeric_argument.cpp
@@ -26,15 +25,4 @@ if (MCGA_cli_tests)
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/parser_test.cpp
             )
     target_link_libraries(mcga_cli_test mcga_test mcga_cli)
-endif ()
-
-if (MCGA_cli_examples)
-    function(add_example example_name)
-        add_executable(mcga_cli_${example_name}_example
-                ${CMAKE_CURRENT_SOURCE_DIR}/examples/${example_name}.cpp
-                )
-        target_link_libraries(mcga_cli_${example_name}_example mcga_cli)
-    endfunction()
-
-    add_example(basic)
 endif ()
