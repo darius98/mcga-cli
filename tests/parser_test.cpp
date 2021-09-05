@@ -16,7 +16,7 @@ using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
 using std::invalid_argument;
-using std::runtime_error;
+using std::logic_error;
 using std::string;
 using std::vector;
 
@@ -198,7 +198,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("name"));
                },
-               throwsA<runtime_error>());
+               throwsA<logic_error>());
          });
 
     test("Registering an argument with the same name as an existing one's "
@@ -209,7 +209,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("n"));
                },
-               throwsA<runtime_error>());
+               throwsA<logic_error>());
          });
 
     test("Registering an argument with the same short name as an existing "
@@ -220,7 +220,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("name").set_short_name("n"));
                },
-               throwsA<runtime_error>());
+               throwsA<logic_error>());
          });
 
     test("Registering an argument with the same short name as an existing "
@@ -232,7 +232,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                  parser->add_argument(
                      ArgumentSpec("name2").set_short_name("n"));
                },
-               throwsA<runtime_error>());
+               throwsA<logic_error>());
          });
 
     test("Registering an argument with a short name that is longer than "
@@ -243,7 +243,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                  parser->add_argument(
                      ArgumentSpec("name").set_short_name("nnn"));
                },
-               throwsA<runtime_error>());
+               throwsA<logic_error>());
          });
   });
 

@@ -9,7 +9,7 @@ bool CommandLineOption::appeared() const {
 }
 
 CommandLineOption::CommandLineOption(bool has_default_value_,
-                                 bool has_implicit_value_)
+                                     bool has_implicit_value_)
     : has_default_value(has_default_value_),
       has_implicit_value(has_implicit_value_) {}
 

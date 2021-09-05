@@ -84,7 +84,7 @@ class NumericArgumentImpl: public CommandLineOption {
 public:
   explicit NumericArgumentImpl(const NumericArgumentSpec& spec)
       : CommandLineOption(spec.default_value.has_value(),
-                        spec.implicit_value.has_value()),
+                          spec.implicit_value.has_value()),
         spec(spec) {}
 
   ~NumericArgumentImpl() override = default;
@@ -116,11 +116,22 @@ private:
   T value;
 
   friend class mcga::cli::Parser;
+  template<typename EArg>
+  friend class ListArgumentImpl;
 };
+
+template<class T>
+using NumericArgumentBase = std::shared_ptr<NumericArgumentImpl<T>>;
 
 } // namespace internal
 
 template<class T>
-using NumericArgument = std::shared_ptr<internal::NumericArgumentImpl<T>>;
+struct NumericArgument: internal::NumericArgumentBase<T> {
+  using ValueType = T;
+  using SpecType = NumericArgumentSpec;
+  using internal::NumericArgumentBase<T>::NumericArgumentBase;
+  explicit NumericArgument(internal::NumericArgumentBase<T> ptr)
+      : internal::NumericArgumentBase<T>(std::move(ptr)) {}
+};
 
 } // namespace mcga::cli
