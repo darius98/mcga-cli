@@ -99,16 +99,16 @@ namespace internal {
 
 template<typename EArg = Argument>
 class ListArgumentImpl: public CommandLineOption {
-using ValueType = typename EArg::ValueType;
-using SpecType = typename EArg::SpecType;
-using EltImpl = typename EArg::element_type;
+  using ValueType = typename EArg::ValueType;
+  using SpecType = typename EArg::SpecType;
+  using EltImpl = typename EArg::element_type;
 
 public:
   explicit ListArgumentImpl(const ListArgumentSpec<EArg>& spec)
       : CommandLineOption(spec.default_value.has_value(),
                           spec.implicit_value.has_value()),
-        spec(spec), impl(SpecType(spec.name)) {
-  }
+        spec(spec),
+        impl(SpecType(spec.name)) {}
 
   ~ListArgumentImpl() override = default;
 
@@ -135,7 +135,7 @@ private:
 
   void set_default() override {
     value.clear();
-    for (const std::string& val : spec.default_value.value().generate()) {
+    for (const std::string& val: spec.default_value.value().generate()) {
       impl.set_value(val);
       value.push_back(impl.get_value());
     }
@@ -143,7 +143,7 @@ private:
 
   void set_implicit() override {
     if (!applied_implicit) {
-      for (const std::string& val : spec.implicit_value.value().generate()) {
+      for (const std::string& val: spec.implicit_value.value().generate()) {
         impl.set_value(val);
         value.push_back(impl.get_value());
       }
@@ -161,7 +161,7 @@ private:
   std::vector<ValueType> value;
   EltImpl impl;
 
-    friend class mcga::cli::Parser;
+  friend class mcga::cli::Parser;
 };
 
 template<typename EArg = Argument>
@@ -172,7 +172,7 @@ using ListArgumentBase = std::shared_ptr<internal::ListArgumentImpl<EArg>>;
 template<typename EArg = Argument>
 struct ListArgument: internal::ListArgumentBase<EArg> {
   using ValueType = std::vector<typename EArg::ValueType>;
-  using SpecType  = ListArgumentSpec<EArg>;
+  using SpecType = ListArgumentSpec<EArg>;
   using internal::ListArgumentBase<EArg>::ListArgumentBase;
   explicit ListArgument(internal::ListArgumentBase<EArg> ptr)
       : internal::ListArgumentBase<EArg>(std::move(ptr)) {}

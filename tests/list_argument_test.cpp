@@ -103,12 +103,13 @@ TEST_CASE(McgaCliListArgument, "List argument") {
            isEqualTo(std::vector<std::string>{"c", "a", "b", "d", "q"}));
   });
 
-  test("NumericArgument: Applying implicit value and multiple other values", [&] {
-      auto arg = parser->add_list_argument(
-              ListArgumentSpec<NumericArgument<int>>("name").set_implicit_value({"1", "2"}));
+  test("NumericArgument: Applying implicit value and multiple other values",
+       [&] {
+         auto arg = parser->add_list_argument(
+             ListArgumentSpec<NumericArgument<int>>("name").set_implicit_value(
+                 {"1", "2"}));
 
-      parser->parse({"--name=3", "--name", "--name=4", "--name=5"});
-      expect(arg->get_value(),
-             isEqualTo(std::vector<int>{3, 1, 2, 4, 5}));
-  });
+         parser->parse({"--name=3", "--name", "--name=4", "--name=5"});
+         expect(arg->get_value(), isEqualTo(std::vector<int>{3, 1, 2, 4, 5}));
+       });
 }
