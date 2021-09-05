@@ -37,11 +37,15 @@ private:
   friend class mcga::cli::Parser;
 };
 
+using FlagBase = std::shared_ptr<FlagImpl>;
+
 } // namespace internal
 
-struct Flag : std::shared_ptr<internal::FlagImpl> {
-    using ValueType = bool;
-    using std::shared_ptr<internal::FlagImpl>::shared_ptr;
+struct Flag: internal::FlagBase {
+  using ValueType = bool;
+
+  using internal::FlagBase::FlagBase;
+  explicit Flag(internal::FlagBase ptr): internal::FlagBase(std::move(ptr)) {}
 };
 
 } // namespace mcga::cli

@@ -98,7 +98,7 @@ class ChoiceArgumentImpl: public CommandLineOption {
 public:
   explicit ChoiceArgumentImpl(const ChoiceArgumentSpec<T>& spec)
       : CommandLineOption(spec.default_value.has_value(),
-                        spec.implicit_value.has_value()),
+                          spec.implicit_value.has_value()),
         spec(spec) {}
 
   ~ChoiceArgumentImpl() override = default;
@@ -152,11 +152,18 @@ private:
   friend class mcga::cli::Parser;
 };
 
+template<class T>
+using ChoiceArgumentBase = std::shared_ptr<internal::ChoiceArgumentImpl<T>>;
+
 } // namespace internal
 
 template<class T>
-struct ChoiceArgument : std::shared_ptr<internal::ChoiceArgumentImpl<T>> {
-    using ValueType = T;
+struct ChoiceArgument: internal::ChoiceArgumentBase<T> {
+  using ValueType = T;
+
+  using internal::ChoiceArgumentBase<T>::ChoiceArgumentBase;
+  explicit ChoiceArgument(internal::ChoiceArgumentBase<T> ptr)
+      : internal::ChoiceArgumentBase<T>(std::move(ptr)) {}
 };
 
 } // namespace mcga::cli

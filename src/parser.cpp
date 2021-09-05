@@ -17,23 +17,20 @@ Argument Parser::add_argument(const ArgumentSpec& spec) {
             "', Implicit: '" + spec.implicit_value.value().get_description() +
             "'";
   } else if (spec.default_value.has_value()) {
-    extra =
-        "Default: '" + spec.default_value.value().get_description() + "'";
+    extra = "Default: '" + spec.default_value.value().get_description() + "'";
   } else if (spec.implicit_value.has_value()) {
-    extra =
-        "Implicit: '" + spec.implicit_value.value().get_description() + "'";
+    extra = "Implicit: '" + spec.implicit_value.value().get_description() + "'";
   }
   add_help(spec.help_group, spec.name, spec.short_name, spec.description,
            extra);
-  return Argument(argument);
+  return Argument(std::move(argument));
 }
 
 Flag Parser::add_flag(const FlagSpec& spec) {
   check_name_availability(spec.name, spec.short_name);
   auto flag = std::make_shared<internal::FlagImpl>(spec);
   add_spec(flag, spec.name, spec.short_name);
-  add_help(spec.help_group, spec.name, spec.short_name,
-           spec.description, "");
+  add_help(spec.help_group, spec.name, spec.short_name, spec.description, "");
   return Flag(std::move(flag));
 }
 

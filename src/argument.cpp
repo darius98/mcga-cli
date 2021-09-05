@@ -65,7 +65,7 @@ const ArgumentSpec& ArgumentImpl::get_spec() const {
 
 ArgumentImpl::ArgumentImpl(const ArgumentSpec& spec)
     : CommandLineOption(spec.default_value.has_value(),
-                      spec.implicit_value.has_value()),
+                        spec.implicit_value.has_value()),
       spec(spec) {}
 
 const std::string& ArgumentImpl::get_name() const {

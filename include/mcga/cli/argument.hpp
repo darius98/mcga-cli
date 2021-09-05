@@ -1,7 +1,7 @@
 #pragma once
 
-#include <optional>
 #include <memory>
+#include <optional>
 #include <string>
 
 #include "command_line_option.hpp"
@@ -66,11 +66,17 @@ private:
   friend class mcga::cli::Parser;
 };
 
+using ArgumentBase = std::shared_ptr<ArgumentImpl>;
+
 } // namespace internal
 
-struct Argument : std::shared_ptr<internal::ArgumentImpl> {
-    using ValueType = std::string;
-    using std::shared_ptr<internal::ArgumentImpl>::shared_ptr;
+struct Argument: internal::ArgumentBase {
+  using ValueType = std::string;
+
+
+  using internal::ArgumentBase::ArgumentBase;
+  explicit Argument(internal::ArgumentBase ptr)
+      : internal::ArgumentBase(std::move(ptr)) {}
 };
 
 } // namespace mcga::cli

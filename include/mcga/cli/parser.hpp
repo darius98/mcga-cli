@@ -28,7 +28,7 @@ public:
 
   // TODO(@Alexandra): Implement ListArgument & ListArgumentSpec as a template.
   //  Hint 1: The signature of this method should look like this:
-  template<class EArg=Argument>
+  template<class EArg = Argument>
   ListArgument<EArg> add_list_argument(const ListArgumentSpec<EArg>& spec) {
     check_name_availability(spec.name, spec.short_name);
     auto argument = std::make_shared<internal::ListArgumentImpl<EArg>>(spec);
@@ -39,18 +39,18 @@ public:
               "', Implicit: '" + spec.implicit_value.value().get_description() +
               "'";
     } else if (spec.default_value.has_value()) {
-      extra =
-              "Default: '" + spec.default_value.value().get_description() + "'";
+      extra = "Default: '" + spec.default_value.value().get_description() + "'";
     } else if (spec.implicit_value.has_value()) {
       extra =
-              "Implicit: '" + spec.implicit_value.value().get_description() + "'";
+          "Implicit: '" + spec.implicit_value.value().get_description() + "'";
     }
     add_help(spec.help_group, spec.name, spec.short_name, spec.description,
              extra);
-    return argument;
+    return ListArgument<EArg>(std::move(argument));
   }
   //  Hint 2: The current behaviour of ListArgument & ListArgumentSpec should
-  //  match the new behaviour of ListArgument<ArgumentSpec> & ListArgumentSpec<ArgumentSpec>.
+  //  match the new behaviour of ListArgument<ArgumentSpec> &
+  //  ListArgumentSpec<ArgumentSpec>.
 
   // Hint 3: Element can be ChoiceArgument, Flag, NumericArgument, Argument
 
@@ -62,7 +62,7 @@ public:
     add_numeric_argument_help(spec.default_value, spec.implicit_value,
                               spec.help_group, spec.name, spec.short_name,
                               spec.description);
-    return argument;
+    return NumericArgument<T>(std::move(argument));
   }
 
   Flag add_flag(const FlagSpec& spec);
@@ -90,7 +90,7 @@ public:
     add_choice_argument_help(spec.default_value, spec.implicit_value,
                              spec.help_group, spec.name, spec.short_name,
                              spec.description, rendered_options);
-    return choice_argument;
+    return ChoiceArgument<T>(std::move(choice_argument));
   }
 
   ArgList parse(const ArgList& args);

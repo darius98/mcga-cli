@@ -5,13 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 option(MCGA_cli_tests "Build MCGA CLI tests" OFF)
 
 add_library(mcga_cli STATIC
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/argument.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/command_line_option.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/exceptions.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/flag.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/generator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/argument.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/command_line_option.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/exceptions.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/flag.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/generator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/numeric_argument.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cpp)
 target_include_directories(mcga_cli PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if (MCGA_cli_tests)
