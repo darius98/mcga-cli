@@ -68,6 +68,9 @@ private:
 
 } // namespace internal
 
-using Argument = std::shared_ptr<internal::ArgumentImpl>;
+struct Argument : std::shared_ptr<internal::ArgumentImpl> {
+    using ValueType = std::string;
+    using std::shared_ptr<internal::ArgumentImpl>::shared_ptr;
+};
 
 } // namespace mcga::cli

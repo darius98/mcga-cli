@@ -155,6 +155,8 @@ private:
 } // namespace internal
 
 template<class T>
-using ChoiceArgument = std::shared_ptr<internal::ChoiceArgumentImpl<T>>;
+struct ChoiceArgument : std::shared_ptr<internal::ChoiceArgumentImpl<T>> {
+    using ValueType = T;
+};
 
 } // namespace mcga::cli

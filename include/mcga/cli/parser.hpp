@@ -28,13 +28,31 @@ public:
 
   // TODO(@Alexandra): Implement ListArgument & ListArgumentSpec as a template.
   //  Hint 1: The signature of this method should look like this:
-//  template<class ElementSpec>
-//  ListArgument<ElementSpec> add_list_argument(const ListArgumentSpec<ElementSpec>& spec) {
-//  }
+  template<class EArg=Argument>
+  ListArgument<EArg> add_list_argument(const ListArgumentSpec<EArg>& spec) {
+    check_name_availability(spec.name, spec.short_name);
+    auto argument = std::make_shared<internal::ListArgumentImpl<EArg>>(spec);
+    add_spec(argument, spec.name, spec.short_name);
+    std::string extra;
+    if (spec.default_value.has_value() && spec.implicit_value.has_value()) {
+      extra = "Default: '" + spec.default_value.value().get_description() +
+              "', Implicit: '" + spec.implicit_value.value().get_description() +
+              "'";
+    } else if (spec.default_value.has_value()) {
+      extra =
+              "Default: '" + spec.default_value.value().get_description() + "'";
+    } else if (spec.implicit_value.has_value()) {
+      extra =
+              "Implicit: '" + spec.implicit_value.value().get_description() + "'";
+    }
+    add_help(spec.help_group, spec.name, spec.short_name, spec.description,
+             extra);
+    return argument;
+  }
   //  Hint 2: The current behaviour of ListArgument & ListArgumentSpec should
   //  match the new behaviour of ListArgument<ArgumentSpec> & ListArgumentSpec<ArgumentSpec>.
 
-  ListArgument add_list_argument(const ListArgumentSpec& spec);
+  // Hint 3: Element can be ChoiceArgument, Flag, NumericArgument, Argument
 
   template<class T>
   NumericArgument<T> add_numeric_argument(const NumericArgumentSpec& spec) {

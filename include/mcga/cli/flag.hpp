@@ -39,6 +39,9 @@ private:
 
 } // namespace internal
 
-using Flag = std::shared_ptr<internal::FlagImpl>;
+struct Flag : std::shared_ptr<internal::FlagImpl> {
+    using ValueType = bool;
+    using std::shared_ptr<internal::FlagImpl>::shared_ptr;
+};
 
 } // namespace mcga::cli

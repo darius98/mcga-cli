@@ -121,6 +121,8 @@ private:
 } // namespace internal
 
 template<class T>
-using NumericArgument = std::shared_ptr<internal::NumericArgumentImpl<T>>;
+struct NumericArgument : std::shared_ptr<internal::NumericArgumentImpl<T>> {
+    using ValueType = T;
+};
 
 } // namespace mcga::cli

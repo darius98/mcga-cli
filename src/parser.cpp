@@ -9,7 +9,7 @@ Parser::Parser(const std::string& help_prefix_)
 
 Argument Parser::add_argument(const ArgumentSpec& spec) {
   check_name_availability(spec.name, spec.short_name);
-  Argument argument = std::make_shared<internal::ArgumentImpl>(spec);
+  auto argument = std::make_shared<internal::ArgumentImpl>(spec);
   add_spec(argument, spec.name, spec.short_name);
   std::string extra;
   if (spec.default_value.has_value() && spec.implicit_value.has_value()) {
@@ -25,37 +25,16 @@ Argument Parser::add_argument(const ArgumentSpec& spec) {
   }
   add_help(spec.help_group, spec.name, spec.short_name, spec.description,
            extra);
-  return argument;
-}
-
-ListArgument Parser::add_list_argument(const ListArgumentSpec& spec) {
-  check_name_availability(spec.name, spec.short_name);
-  ListArgument argument = std::make_shared<internal::ListArgumentImpl>(spec);
-  add_spec(argument, spec.name, spec.short_name);
-  std::string extra;
-  if (spec.default_value.has_value() && spec.implicit_value.has_value()) {
-    extra = "Default: '" + spec.default_value.value().get_description() +
-            "', Implicit: '" + spec.implicit_value.value().get_description() +
-            "'";
-  } else if (spec.default_value.has_value()) {
-    extra =
-        "Default: '" + spec.default_value.value().get_description() + "'";
-  } else if (spec.implicit_value.has_value()) {
-    extra =
-        "Implicit: '" + spec.implicit_value.value().get_description() + "'";
-  }
-  add_help(spec.help_group, spec.name, spec.short_name, spec.description,
-           extra);
-  return argument;
+  return Argument(argument);
 }
 
 Flag Parser::add_flag(const FlagSpec& spec) {
   check_name_availability(spec.name, spec.short_name);
-  Flag flag = std::make_shared<internal::FlagImpl>(spec);
+  auto flag = std::make_shared<internal::FlagImpl>(spec);
   add_spec(flag, spec.name, spec.short_name);
   add_help(spec.help_group, spec.name, spec.short_name,
            spec.description, "");
-  return flag;
+  return Flag(std::move(flag));
 }
 
 void Parser::add_terminal_flag(const FlagSpec& spec,

@@ -10,8 +10,7 @@ add_library(mcga_cli STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/src/exceptions.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/flag.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/generator.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/list_argument.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/numeric_argument.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/numeric_argument.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cpp)
 target_include_directories(mcga_cli PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
