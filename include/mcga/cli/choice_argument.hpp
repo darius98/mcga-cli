@@ -150,6 +150,8 @@ private:
   T value;
 
   friend class mcga::cli::Parser;
+  template<typename EArg>
+  friend class ListArgumentImpl;
 };
 
 template<class T>

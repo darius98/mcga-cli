@@ -64,6 +64,8 @@ private:
   std::string value;
 
   friend class mcga::cli::Parser;
+  template<typename EArg>
+  friend class ListArgumentImpl;
 };
 
 using ArgumentBase = std::shared_ptr<ArgumentImpl>;
@@ -72,7 +74,7 @@ using ArgumentBase = std::shared_ptr<ArgumentImpl>;
 
 struct Argument: internal::ArgumentBase {
   using ValueType = std::string;
-
+  using SpecType = ArgumentSpec;
 
   using internal::ArgumentBase::ArgumentBase;
   explicit Argument(internal::ArgumentBase ptr)

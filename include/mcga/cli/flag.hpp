@@ -35,6 +35,8 @@ private:
   [[nodiscard]] bool consumes_next_positional_arg() const override;
 
   friend class mcga::cli::Parser;
+  template<typename EArg>
+  friend class ListArgumentImpl;
 };
 
 using FlagBase = std::shared_ptr<FlagImpl>;
@@ -43,7 +45,7 @@ using FlagBase = std::shared_ptr<FlagImpl>;
 
 struct Flag: internal::FlagBase {
   using ValueType = bool;
-
+  using SpecType = FlagSpec;
   using internal::FlagBase::FlagBase;
   explicit Flag(internal::FlagBase ptr): internal::FlagBase(std::move(ptr)) {}
 };

@@ -99,15 +99,20 @@ namespace internal {
 
 template<typename EArg = Argument>
 class ListArgumentImpl: public CommandLineOption {
+using ValueType = typename EArg::ValueType;
+using SpecType = typename EArg::SpecType;
+using EltImpl = typename EArg::element_type;
+
 public:
   explicit ListArgumentImpl(const ListArgumentSpec<EArg>& spec)
       : CommandLineOption(spec.default_value.has_value(),
                           spec.implicit_value.has_value()),
-        spec(spec) {}
+        spec(spec), impl(SpecType(spec.name)) {
+  }
 
   ~ListArgumentImpl() override = default;
 
-  [[nodiscard]] std::vector<std::string> get_value() const {
+  [[nodiscard]] std::vector<ValueType> get_value() const {
     return value;
   }
 
@@ -129,26 +134,34 @@ private:
   }
 
   void set_default() override {
-    value = spec.default_value.value().generate();
+    value.clear();
+    for (const std::string& val : spec.default_value.value().generate()) {
+      impl.set_value(val);
+      value.push_back(impl.get_value());
+    }
   }
 
   void set_implicit() override {
     if (!applied_implicit) {
-      auto implicit_value = spec.implicit_value.value().generate();
-      value.insert(value.begin(), implicit_value.begin(), implicit_value.end());
+      for (const std::string& val : spec.implicit_value.value().generate()) {
+        impl.set_value(val);
+        value.push_back(impl.get_value());
+      }
       applied_implicit = true;
     }
   }
 
   void set_value(const std::string& value_) override {
-    value.push_back(value_);
+    impl.set_value(value_);
+    value.push_back(impl.get_value());
   }
 
   bool applied_implicit = false;
   ListArgumentSpec<EArg> spec;
-  std::vector<std::string> value;
+  std::vector<ValueType> value;
+  EltImpl impl;
 
-  friend class mcga::cli::Parser;
+    friend class mcga::cli::Parser;
 };
 
 template<typename EArg = Argument>
@@ -158,8 +171,8 @@ using ListArgumentBase = std::shared_ptr<internal::ListArgumentImpl<EArg>>;
 
 template<typename EArg = Argument>
 struct ListArgument: internal::ListArgumentBase<EArg> {
-  using ValueType = typename EArg::ValueType;
-
+  using ValueType = std::vector<typename EArg::ValueType>;
+  using SpecType  = ListArgumentSpec<EArg>;
   using internal::ListArgumentBase<EArg>::ListArgumentBase;
   explicit ListArgument(internal::ListArgumentBase<EArg> ptr)
       : internal::ListArgumentBase<EArg>(std::move(ptr)) {}
