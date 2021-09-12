@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.12.1)
+cmake_minimum_required(VERSION 3.18)
 project(MCGA_cli)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 option(MCGA_cli_tests "Build MCGA CLI tests" OFF)
 
