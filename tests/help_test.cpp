@@ -1,6 +1,5 @@
 #pragma ide diagnostic ignored "readability-magic-numbers"
 
-#include <iostream>
 #include <vector>
 
 #include <mcga/test.hpp>
@@ -19,16 +18,15 @@ using mcga::test::tearDown;
 using mcga::test::test;
 
 TEST_CASE(McgaCliHelp, "Help") {
-  Parser* parser = nullptr;
+  std::unique_ptr<Parser> parser;
 
   setUp([&] {
-    parser = new Parser("Test help prefix.");
+    parser = std::make_unique<Parser>("Test help prefix.");
     parser->add_help_flag();
   });
 
   tearDown([&] {
-    delete parser;
-    parser = nullptr;
+    parser.reset();
   });
 
   test("Only with the help flag", [&] {

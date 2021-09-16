@@ -17,15 +17,14 @@ using mcga::test::test;
 using std::invalid_argument;
 
 TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
-  Parser* parser = nullptr;
+  std::unique_ptr<Parser> parser;
 
   setUp([&] {
-    parser = new Parser("");
+    parser = std::make_unique<Parser>("");
   });
 
   tearDown([&] {
-    delete parser;
-    parser = nullptr;
+    parser.reset();
   });
 
   test("Passing a NumericArgument<int> an integer value works", [&] {

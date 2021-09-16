@@ -19,19 +19,18 @@ using std::string;
 using std::vector;
 
 TEST_CASE(McgaCliFlag, "Flag") {
-  Parser* parser = nullptr;
+  std::unique_ptr<Parser> parser;
   Flag a;
   Flag b;
 
   setUp([&] {
-    parser = new Parser("");
+    parser = std::make_unique<Parser>("");
     a = parser->add_flag(FlagSpec("flag_a").set_short_name("a"));
     b = parser->add_flag(FlagSpec("flag_b").set_short_name("b"));
   });
 
   tearDown([&] {
-    delete parser;
-    parser = nullptr;
+    parser.reset();
   });
 
   test("Default flag value is false", [&] {

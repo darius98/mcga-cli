@@ -21,15 +21,14 @@ using std::string;
 using std::vector;
 
 TEST_CASE(McgaCliParser, "Parser") {
-  Parser* parser = nullptr;
+  std::unique_ptr<Parser> parser;
 
   setUp([&] {
-    parser = new Parser("Help prefix.");
+    parser = std::make_unique<Parser>("Help prefix.");
   });
 
   tearDown([&] {
-    delete parser;
-    parser = nullptr;
+    parser.reset();
   });
 
   group("Single argument", [&] {

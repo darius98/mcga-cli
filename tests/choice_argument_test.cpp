@@ -18,15 +18,14 @@ using std::map;
 using std::string;
 
 TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
-  Parser* parser = nullptr;
+  std::unique_ptr<Parser> parser;
 
   setUp([&] {
-    parser = new Parser("");
+    parser = std::make_unique<Parser>("");
   });
 
   tearDown([&] {
-    delete parser;
-    parser = nullptr;
+    parser.reset();
   });
 
   test("String choice argument, setting valid value", [&] {
