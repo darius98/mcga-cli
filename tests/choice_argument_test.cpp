@@ -1,5 +1,3 @@
-#pragma ide diagnostic ignored "readability-magic-numbers"
-
 #include <mcga/test.hpp>
 #include <mcga/test_ext/matchers.hpp>
 
@@ -13,9 +11,6 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using std::invalid_argument;
-using std::map;
-using std::string;
 
 TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
   std::unique_ptr<Parser> parser;
@@ -30,25 +25,26 @@ TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
 
   test("String choice argument, setting valid value", [&] {
     auto arg = parser->add_choice_argument(
-        ChoiceArgumentSpec<string>("name").add_option("value", "value"));
+        ChoiceArgumentSpec<std::string>("name").add_option("value", "value"));
     parser->parse({"--name=value"});
     expect(arg->get_value(), isEqualTo("value"));
   });
 
   test("String choice argument, setting invalid value throws", [&] {
     parser->add_choice_argument(
-        ChoiceArgumentSpec<string>("name").add_option("value", "value"));
+        ChoiceArgumentSpec<std::string>("name").add_option("value", "value"));
     expect(
         [&] {
           parser->parse({"--name=other"});
         },
-        throwsA<invalid_argument>());
+        throwsA<std::invalid_argument>());
   });
 
   test("Argument with multiple choices, mapping to the same value", [&] {
-    auto arg = parser->add_choice_argument(ChoiceArgumentSpec<string>("name")
-                                               .add_option("key1", "value")
-                                               .add_option("key2", "value"));
+    auto arg =
+        parser->add_choice_argument(ChoiceArgumentSpec<std::string>("name")
+                                        .add_option("key1", "value")
+                                        .add_option("key2", "value"));
 
     parser->parse({"--name=key1"});
     expect(arg->get_value(), isEqualTo("value"));
@@ -71,16 +67,18 @@ TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
   test("ArgumentSpec options manipulation", [&] {
     ChoiceArgumentSpec<int> spec("name");
 
-    expect(spec.options, isEqualTo(map<string, int>{}));
+    expect(spec.options, isEqualTo(std::map<std::string, int>{}));
 
     spec.add_option("key", 1).add_option("key2", 2);
-    expect(spec.options, isEqualTo(map<string, int>{{"key", 1}, {"key2", 2}}));
+    expect(spec.options,
+           isEqualTo(std::map<std::string, int>{{"key", 1}, {"key2", 2}}));
 
     spec.add_options({{"key", 3}, {"key3", 4}});
-    expect(spec.options,
-           isEqualTo(map<string, int>{{"key", 3}, {"key2", 2}, {"key3", 4}}));
+    expect(spec.options, isEqualTo(std::map<std::string, int>{
+                             {"key", 3}, {"key2", 2}, {"key3", 4}}));
 
     spec.set_options({{"k", 12}, {"l", 14}});
-    expect(spec.options, isEqualTo(map<string, int>{{"k", 12}, {"l", 14}}));
+    expect(spec.options,
+           isEqualTo(std::map<std::string, int>{{"k", 12}, {"l", 14}}));
   });
 }

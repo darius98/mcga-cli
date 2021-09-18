@@ -14,9 +14,6 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using std::invalid_argument;
-using std::string;
-using std::vector;
 
 TEST_CASE(McgaCliFlag, "Flag") {
   std::unique_ptr<Parser> parser;
@@ -62,14 +59,14 @@ TEST_CASE(McgaCliFlag, "Flag") {
         [&] {
           parser->parse({"--flag_a=whatever"});
         },
-        throwsA<invalid_argument>());
+        throwsA<std::invalid_argument>());
   });
 
   test("Single dash flag does not associate with the following positional "
        "argument",
        [&] {
          auto positional = parser->parse({"-a", "enabled"});
-         expect(positional, isEqualTo(vector<string>{"enabled"}));
+         expect(positional, isEqualTo(std::vector<std::string>{"enabled"}));
          expect(a->get_value(), isTrue);
        });
 }

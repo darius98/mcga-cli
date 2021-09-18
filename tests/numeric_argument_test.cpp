@@ -1,6 +1,3 @@
-#pragma ide diagnostic ignored "google-runtime-int"
-#pragma ide diagnostic ignored "readability-magic-numbers"
-
 #include <mcga/test.hpp>
 #include <mcga/test_ext/matchers.hpp>
 
@@ -14,7 +11,6 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using std::invalid_argument;
 
 TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
   std::unique_ptr<Parser> parser;
@@ -46,7 +42,7 @@ TEST_CASE(McgaCliNumericArgument, "Numeric argument") {
         [&] {
           parser->parse({"--name=invalid"});
         },
-        throwsA<invalid_argument>());
+        throwsA<std::invalid_argument>());
   });
 
   test("Passing a NumericArgument<int> a negative value works", [&] {

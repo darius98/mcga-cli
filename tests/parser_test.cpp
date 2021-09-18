@@ -15,10 +15,6 @@ using mcga::test::group;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using std::invalid_argument;
-using std::logic_error;
-using std::string;
-using std::vector;
 
 TEST_CASE(McgaCliParser, "Parser") {
   std::unique_ptr<Parser> parser;
@@ -82,7 +78,7 @@ TEST_CASE(McgaCliParser, "Parser") {
          [&] {
            auto positionalArgs = parser->parse({"--name", "v"});
            expect(arg->get_value(), isEqualTo("b"));
-           expect(positionalArgs, isEqualTo(vector<string>{"v"}));
+           expect(positionalArgs, isEqualTo(std::vector<std::string>{"v"}));
            expect(arg->appeared(), isTrue);
          });
 
@@ -197,7 +193,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("name"));
                },
-               throwsA<logic_error>());
+               throwsA<std::logic_error>());
          });
 
     test("Registering an argument with the same name as an existing one's "
@@ -208,7 +204,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("n"));
                },
-               throwsA<logic_error>());
+               throwsA<std::logic_error>());
          });
 
     test("Registering an argument with the same short name as an existing "
@@ -219,7 +215,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("name").set_short_name("n"));
                },
-               throwsA<logic_error>());
+               throwsA<std::logic_error>());
          });
 
     test("Registering an argument with the same short name as an existing "
@@ -231,7 +227,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                  parser->add_argument(
                      ArgumentSpec("name2").set_short_name("n"));
                },
-               throwsA<logic_error>());
+               throwsA<std::logic_error>());
          });
 
     test("Registering an argument with a short name that is longer than "
@@ -242,7 +238,7 @@ TEST_CASE(McgaCliParser, "Parser") {
                  parser->add_argument(
                      ArgumentSpec("name").set_short_name("nnn"));
                },
-               throwsA<logic_error>());
+               throwsA<std::logic_error>());
          });
   });
 
@@ -254,7 +250,7 @@ TEST_CASE(McgaCliParser, "Parser") {
           [&] {
             parser->parse({});
           },
-          throwsA<invalid_argument>());
+          throwsA<std::invalid_argument>());
     });
 
     test("Setting implicit value for no-implicit argument", [&] {
@@ -263,7 +259,7 @@ TEST_CASE(McgaCliParser, "Parser") {
           [&] {
             parser->parse({"--x"});
           },
-          throwsA<invalid_argument>());
+          throwsA<std::invalid_argument>());
     });
   });
 }
