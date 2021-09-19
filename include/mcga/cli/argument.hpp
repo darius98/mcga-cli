@@ -14,9 +14,9 @@ class Parser;
 
 struct ArgumentSpec {
   std::string name;
-  std::string description = "";
-  std::string help_group = "";
-  std::string short_name = "";
+  std::string description;
+  std::string help_group;
+  std::string short_name;
   std::optional<internal::Generator> default_value;
   std::optional<internal::Generator> implicit_value;
 

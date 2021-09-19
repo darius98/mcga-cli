@@ -15,9 +15,9 @@ namespace mcga::cli {
 template<class T>
 struct ChoiceArgumentSpec {
   std::string name;
-  std::string description = "";
-  std::string help_group = "";
-  std::string short_name = "";
+  std::string description;
+  std::string help_group;
+  std::string short_name;
   std::map<std::string, T> options;
   std::optional<internal::Generator> default_value;
   std::optional<internal::Generator> implicit_value;

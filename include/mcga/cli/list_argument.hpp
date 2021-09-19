@@ -24,7 +24,7 @@ inline std::string join_strings(const std::vector<std::string>& parts) {
                                  }) +
                  joined.size() - 1);
   for (const auto& part: parts) {
-    if (joined.size() != 0) {
+    if (!joined.empty()) {
       joined += ',';
     }
     joined += part;
@@ -39,9 +39,9 @@ class Parser;
 template<typename EArg = Argument>
 struct ListArgumentSpec {
   std::string name;
-  std::string description = "";
-  std::string help_group = "";
-  std::string short_name = "";
+  std::string description;
+  std::string help_group;
+  std::string short_name;
   std::optional<internal::ListGenerator> default_value;
   std::optional<internal::ListGenerator> implicit_value;
 

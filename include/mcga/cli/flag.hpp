@@ -10,9 +10,9 @@ namespace mcga::cli {
 
 struct FlagSpec {
   std::string name;
-  std::string description = "";
-  std::string help_group = "";
-  std::string short_name = "";
+  std::string description;
+  std::string help_group;
+  std::string short_name;
 
   explicit FlagSpec(std::string name_);
 
