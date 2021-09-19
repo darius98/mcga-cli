@@ -15,7 +15,7 @@ using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
 
-TEST_CASE(McgaCliHelp, "Help") {
+TEST_CASE("Help") {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {

@@ -15,7 +15,7 @@ using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
 
-TEST_CASE(McgaCliFlag, "Flag") {
+TEST_CASE("Flag") {
   std::unique_ptr<Parser> parser;
   Flag a;
   Flag b;

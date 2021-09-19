@@ -12,7 +12,7 @@ using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
 
-TEST_CASE(McgaCliChoiceArgument, "Choice argument") {
+TEST_CASE("Choice argument") {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {
