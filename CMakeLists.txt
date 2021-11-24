@@ -25,3 +25,5 @@ if (MCGA_cli_tests)
             )
     target_link_libraries(mcga_cli_test mcga_test mcga_cli)
 endif ()
+
+install(DIRECTORY include DESTINATION .)
