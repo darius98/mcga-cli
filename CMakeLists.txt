@@ -27,3 +27,4 @@ if (MCGA_cli_tests)
 endif ()
 
 install(DIRECTORY include DESTINATION .)
+install(TARGETS mcga_cli DESTINATION lib)
