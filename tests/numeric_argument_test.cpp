@@ -11,8 +11,9 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
+using mcga::test::TestCase;
 
-TEST_CASE("Numeric argument") {
+static auto t = TestCase{"Numeric argument"} + [] {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {
@@ -58,4 +59,4 @@ TEST_CASE("Numeric argument") {
          parser->parse({"--name=12345678912345"});
          expect(arg->get_value(), isEqualTo(12345678912345LL));
        });
-}
+};

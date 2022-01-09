@@ -15,7 +15,7 @@ using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
 
-TEST_CASE("Help") {
+static auto t = mcga::test::TestCase{"Help"} + [] {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {
@@ -153,4 +153,4 @@ TEST_CASE("Help") {
                      "\t--vm-heap  Interpreter VM max heap size\n"
                      "\t\tDefault: '1000', Implicit: '1000'\n"));
   });
-}
+};
