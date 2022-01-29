@@ -14,9 +14,8 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::TestCase;
 
-static auto t = TestCase{"Flag"} + [] {
+TEST_CASE("Flag") {
   std::unique_ptr<Parser> parser;
   Flag a;
   Flag b;
@@ -70,4 +69,4 @@ static auto t = TestCase{"Flag"} + [] {
          expect(positional, isEqualTo(std::vector<std::string>{"enabled"}));
          expect(a->get_value(), isTrue);
        });
-};
+}

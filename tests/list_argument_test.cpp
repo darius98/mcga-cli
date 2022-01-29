@@ -12,9 +12,8 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::TestCase;
 
-static auto t = TestCase{"List argument"} + [] {
+TEST_CASE("List argument") {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {
@@ -108,4 +107,4 @@ static auto t = TestCase{"List argument"} + [] {
          parser->parse({"--name=3", "--name", "--name=4", "--name=5"});
          expect(arg->get_value(), isEqualTo(std::vector<int>{3, 1, 2, 4, 5}));
        });
-};
+}

@@ -15,9 +15,8 @@ using mcga::test::group;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::TestCase;
 
-static auto t = TestCase{"Parser"} + [] {
+TEST_CASE("Parser") {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {
@@ -263,4 +262,4 @@ static auto t = TestCase{"Parser"} + [] {
           throwsA<std::invalid_argument>());
     });
   });
-};
+}

@@ -11,9 +11,8 @@ using mcga::test::expect;
 using mcga::test::setUp;
 using mcga::test::tearDown;
 using mcga::test::test;
-using mcga::test::TestCase;
 
-static auto t = TestCase{"Choice argument"} + [] {
+TEST_CASE("Choice argument") {
   std::unique_ptr<Parser> parser;
 
   setUp([&] {
@@ -82,4 +81,4 @@ static auto t = TestCase{"Choice argument"} + [] {
     expect(spec.options,
            isEqualTo(std::map<std::string, int>{{"k", 12}, {"l", 14}}));
   });
-};
+}
