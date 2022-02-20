@@ -4,6 +4,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(MCGA_cli_tests "Build MCGA CLI tests" OFF)
 
+if (SANITIZER_COMPILE_OPTIONS)
+    add_compile_options(${SANITIZER_COMPILE_OPTIONS})
+endif ()
+if (SANITIZER_LINK_OPTIONS)
+    add_link_options(${SANITIZER_LINK_OPTIONS})
+endif ()
+
 add_library(mcga_cli STATIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src/argument.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/command_line_option.cpp

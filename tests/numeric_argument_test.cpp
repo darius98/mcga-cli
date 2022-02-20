@@ -42,7 +42,7 @@ TEST_CASE("Numeric argument") {
         [&] {
           parser->parse({"--name=invalid"});
         },
-        throwsA<std::invalid_argument>());
+        throwsA<std::invalid_argument>);
   });
 
   test("Passing a NumericArgument<int> a negative value works", [&] {

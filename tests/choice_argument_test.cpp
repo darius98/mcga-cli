@@ -37,7 +37,7 @@ TEST_CASE("Choice argument") {
         [&] {
           parser->parse({"--name=other"});
         },
-        throwsA<std::invalid_argument>());
+        throwsA<std::invalid_argument>);
   });
 
   test("Argument with multiple choices, mapping to the same value", [&] {

@@ -31,6 +31,7 @@ TEST_CASE("Flag") {
   });
 
   test("Default flag value is false", [&] {
+    parser->parse({});
     expect(a->get_value(), isFalse);
     expect(b->get_value(), isFalse);
   });
@@ -59,7 +60,7 @@ TEST_CASE("Flag") {
         [&] {
           parser->parse({"--flag_a=whatever"});
         },
-        throwsA<std::invalid_argument>());
+        throwsA<std::invalid_argument>);
   });
 
   test("Single dash flag does not associate with the following positional "

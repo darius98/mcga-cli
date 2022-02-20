@@ -193,7 +193,7 @@ TEST_CASE("Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("name"));
                },
-               throwsA<std::logic_error>());
+               throwsA<std::logic_error>);
          });
 
     test("Registering an argument with the same name as an existing one's "
@@ -204,7 +204,7 @@ TEST_CASE("Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("n"));
                },
-               throwsA<std::logic_error>());
+               throwsA<std::logic_error>);
          });
 
     test("Registering an argument with the same short name as an existing "
@@ -215,7 +215,7 @@ TEST_CASE("Parser") {
                [&] {
                  parser->add_argument(ArgumentSpec("name").set_short_name("n"));
                },
-               throwsA<std::logic_error>());
+               throwsA<std::logic_error>);
          });
 
     test("Registering an argument with the same short name as an existing "
@@ -227,7 +227,7 @@ TEST_CASE("Parser") {
                  parser->add_argument(
                      ArgumentSpec("name2").set_short_name("n"));
                },
-               throwsA<std::logic_error>());
+               throwsA<std::logic_error>);
          });
 
     test("Registering an argument with a short name that is longer than "
@@ -238,7 +238,7 @@ TEST_CASE("Parser") {
                  parser->add_argument(
                      ArgumentSpec("name").set_short_name("nnn"));
                },
-               throwsA<std::logic_error>());
+               throwsA<std::logic_error>);
          });
   });
 
@@ -250,7 +250,7 @@ TEST_CASE("Parser") {
           [&] {
             parser->parse({});
           },
-          throwsA<std::invalid_argument>());
+          throwsA<std::invalid_argument>);
     });
 
     test("Setting implicit value for no-implicit argument", [&] {
@@ -259,7 +259,7 @@ TEST_CASE("Parser") {
           [&] {
             parser->parse({"--x"});
           },
-          throwsA<std::invalid_argument>());
+          throwsA<std::invalid_argument>);
     });
   });
 }
