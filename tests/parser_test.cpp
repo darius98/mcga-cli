@@ -41,57 +41,74 @@ TEST_CASE("Parser") {
       parser->parse({});
       expect(arg->get_value(), isEqualTo("a"));
       expect(arg->appeared(), isFalse);
+      expect(arg->get_value_if_exists(), isEqualTo(std::nullopt));
     });
 
     test("provided with single dash, short name", [&] {
       parser->parse({"-n"});
       expect(arg->get_value(), isEqualTo("b"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"b"}}));
     });
 
     test("provided with double dash, short name", [&] {
       parser->parse({"--n"});
       expect(arg->get_value(), isEqualTo("b"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"b"}}));
     });
 
     test("provided with double dash, long name", [&] {
       parser->parse({"--name"});
       expect(arg->get_value(), isEqualTo("b"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"b"}}));
     });
 
     test("value provided with single dash & space", [&] {
       parser->parse({"-n", "v"});
       expect(arg->get_value(), isEqualTo("v"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"v"}}));
     });
 
     test("value provided with single dash & equal sign", [&] {
       parser->parse({"-n=v"});
       expect(arg->get_value(), isEqualTo("v"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"v"}}));
     });
 
     test("value provided with double dash & space is positional, while "
          "the argument takes implicit value",
          [&] {
            auto positionalArgs = parser->parse({"--name", "v"});
-           expect(arg->get_value(), isEqualTo("b"));
            expect(positionalArgs, isEqualTo(std::vector<std::string>{"v"}));
+           expect(arg->get_value(), isEqualTo("b"));
            expect(arg->appeared(), isTrue);
+           expect(arg->get_value_if_exists(),
+                  isEqualTo(std::optional{std::string{"b"}}));
          });
 
     test("value provided with double dash & equal sign (short name)", [&] {
       parser->parse({"--n=v"});
       expect(arg->get_value(), isEqualTo("v"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"v"}}));
     });
 
     test("value provided with double dash & equal sign (long name)", [&] {
       parser->parse({"--name=v"});
       expect(arg->get_value(), isEqualTo("v"));
       expect(arg->appeared(), isTrue);
+      expect(arg->get_value_if_exists(),
+             isEqualTo(std::optional{std::string{"v"}}));
     });
 
     test("providing value for different argument name does not influence"
@@ -100,6 +117,7 @@ TEST_CASE("Parser") {
            parser->parse({"-m", "v"});
            expect(arg->get_value(), isEqualTo("a"));
            expect(arg->appeared(), isFalse);
+           expect(arg->get_value_if_exists(), isEqualTo(std::nullopt));
          });
 
     test("when providing multiple values for one argument, it takes the "
@@ -108,6 +126,8 @@ TEST_CASE("Parser") {
            parser->parse({"-n", "v1", "-n", "--name=v2"});
            expect(arg->get_value(), isEqualTo("v2"));
            expect(arg->appeared(), isTrue);
+           expect(arg->get_value_if_exists(),
+                  isEqualTo(std::optional{std::string{"v2"}}));
          });
   });
 

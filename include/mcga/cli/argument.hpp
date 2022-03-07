@@ -45,6 +45,8 @@ public:
 
   ~ArgumentImpl() override = default;
 
+  [[nodiscard]] std::optional<std::string> get_value_if_exists() const;
+
   [[nodiscard]] std::string get_value() const;
 
   [[nodiscard]] const ArgumentSpec& get_spec() const;

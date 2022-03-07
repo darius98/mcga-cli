@@ -55,6 +55,10 @@ ArgumentSpec& ArgumentSpec::set_implicit_value_generator(
 
 namespace internal {
 
+std::optional<std::string> ArgumentImpl::get_value_if_exists() const {
+  return appeared() ? std::optional<std::string>{get_value()} : std::nullopt;
+}
+
 std::string ArgumentImpl::get_value() const {
   return value;
 }

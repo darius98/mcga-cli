@@ -89,6 +89,10 @@ public:
 
   ~NumericArgumentImpl() override = default;
 
+  [[nodiscard]] std::optional<T> get_value_if_exists() const {
+    return appeared() ? std::optional<T>{get_value()} : std::nullopt;
+  }
+
   [[nodiscard]] T get_value() const {
     return value;
   }
