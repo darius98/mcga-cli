@@ -10,10 +10,6 @@ using mcga::cli::FlagSpec;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
 using mcga::matchers::isEqualTo;
-using mcga::test::expect;
-using mcga::test::setUp;
-using mcga::test::tearDown;
-using mcga::test::test;
 
 TEST_CASE("Help") {
   std::unique_ptr<Parser> parser;

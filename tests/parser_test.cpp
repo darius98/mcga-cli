@@ -10,11 +10,6 @@ using mcga::matchers::isEqualTo;
 using mcga::matchers::isFalse;
 using mcga::matchers::isTrue;
 using mcga::matchers::throwsA;
-using mcga::test::expect;
-using mcga::test::group;
-using mcga::test::setUp;
-using mcga::test::tearDown;
-using mcga::test::test;
 
 TEST_CASE("Parser") {
   std::unique_ptr<Parser> parser;

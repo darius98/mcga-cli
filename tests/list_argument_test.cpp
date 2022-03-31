@@ -8,10 +8,6 @@ using mcga::cli::NumericArgument;
 using mcga::cli::Parser;
 using mcga::matchers::isEqualTo;
 using mcga::matchers::throwsA;
-using mcga::test::expect;
-using mcga::test::setUp;
-using mcga::test::tearDown;
-using mcga::test::test;
 
 TEST_CASE("List argument") {
   std::unique_ptr<Parser> parser;
