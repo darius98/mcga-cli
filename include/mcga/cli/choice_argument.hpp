@@ -139,7 +139,7 @@ private:
     }
     std::string rendered_options;
     bool first = true;
-    for (const std::pair<std::string, T>& option: spec.options) {
+    for (const auto& option: spec.options) {
       if (!first) {
         rendered_options += ",";
       }
